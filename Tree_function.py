@@ -1,3 +1,5 @@
+from LCS_function import LCS
+
 def TREE_tuple(x, y):
     lcs_result = LCS(x, y)
 
