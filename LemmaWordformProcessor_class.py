@@ -93,17 +93,17 @@ class LemmaWordformProcessor:
                 j_l = int(j_l)
 
                 if len(x) < i_l + j_l:
-                    return ""
+                    return None
 
                 self.tree = tree_i
                 p = self.APPLY(x[:i_l])  # Создаем префикс
                 if p is None:
-                    return ""
+                    return None
 
                 self.tree = tree_j
                 s = self.APPLY(x[-j_l:])  # Создаем суффикс
                 if s is None:
-                    return ""
+                    return None
 
                 return p + x[i_l:len(x) - j_l] + s  # Конкатенируем префикс, LCS и суффикс
 
@@ -112,11 +112,11 @@ class LemmaWordformProcessor:
                 if x == u:
                     return v
                 else:
-                    return ""
+                    return None
 
-        return None  # В случае неправильного формата дерева
+        #return None  # В случае неправильного формата дерева
 
-'''
+
 # Пример использования
 lemma = "umschauen"
 wordform = "umgeschaut"
@@ -127,4 +127,4 @@ print(processor.get_tree())
 result = processor.APPLY("umgeschaut")
 print(f"Lemma: {result}")
 
-'''
+
