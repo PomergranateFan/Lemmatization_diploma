@@ -2,6 +2,7 @@ import pickle
 import xml.etree.ElementTree as ET
 from LemmaWordformProcessor_class import LemmaWordformProcessor
 
+
 class BaseDictionaryCorpus:
     def __init__(self, data_path, input_file, output_file):
         """
@@ -29,10 +30,10 @@ class BaseDictionaryCorpus:
         with open(self.input_file, 'rb') as file:
             data = pickle.load(file)
 
-        for i, pair in enumerate(data[:200]):
+        for i, pair in enumerate(data[:]):
             lemma, wordform = pair
             processor = LemmaWordformProcessor(lemma, wordform)
-            processor.TREE()
+            processor.tree_method()
             self.tree_set.add(processor.get_tree())
 
         file.close()
@@ -48,6 +49,7 @@ class BaseDictionaryCorpus:
         """
         with open(self.output_file, 'wb') as file:
             pickle.dump(self.tree_set, file)
+
 
 class OpenCorpora(BaseDictionaryCorpus):
     def __init__(self, data_path, input_file, output_file):
@@ -85,8 +87,11 @@ class OpenCorpora(BaseDictionaryCorpus):
 
         print("Extracted and saved lemma-wordform pairs.")
 
+
+'''
 # Пример использования
-opencorpora = OpenCorpora("dict.opcorpora_0_82.xml", "lemma_wordform_pair_new_test.pkl", "tree_set_new_test.pkl")
+opencorpora = OpenCorpora("dict.opcorpora_0_82.xml", "lemma_wordform_pair_full.pkl", "tree_set_full.pkl")
 opencorpora.extract_lemma_wordform_pairs()
 opencorpora.build_trees()
 opencorpora.save_tree_set()
+'''
