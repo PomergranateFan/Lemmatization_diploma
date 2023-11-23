@@ -17,6 +17,7 @@ class BaseDictionaryCorpus:
         self.input_file = input_file
         self.output_file = output_file
         self.tree_set = set()
+        self.processor = LemmaWordformProcessor()
 
     def build_trees(self):
         """
@@ -32,9 +33,8 @@ class BaseDictionaryCorpus:
 
         for i, pair in enumerate(data[:]):
             lemma, wordform = pair
-            processor = LemmaWordformProcessor(lemma, wordform)
-            processor.tree_method()
-            self.tree_set.add(processor.get_tree())
+            tree = self.processor.build_tree(wordform, lemma)
+            self.tree_set.add(tree)
 
         file.close()
 
@@ -49,6 +49,17 @@ class BaseDictionaryCorpus:
         """
         with open(self.output_file, 'wb') as file:
             pickle.dump(self.tree_set, file)
+
+    def extract_lemma_wordform_pairs(self):
+        """
+        Метод для извлечения пар лемма-словоформа из исходного словаря.
+
+        Проходит через файл и извлекает пары лемма-словоформа.
+
+        Returns:
+            None
+        """
+        raise ValueError("Not implemented error!")
 
 
 class OpenCorpora(BaseDictionaryCorpus):
@@ -74,24 +85,24 @@ class OpenCorpora(BaseDictionaryCorpus):
         """
         tree = ET.parse(self.data_path)
         root = tree.getroot()
-        lemma_wordform_pairs = []
+        lemma_wordform_pairs = set()
 
         for lemma in root.find("lemmata").iter("lemma"):
             lemma_text = lemma.find("l").get("t")
             for wordform in lemma.iter("f"):
                 wordform_text = wordform.get("t")
-                lemma_wordform_pairs.append((lemma_text, wordform_text))
+                lemma_wordform_pairs.add((lemma_text, wordform_text))
 
         with open(self.input_file, "wb") as pickle_file:
             pickle.dump(lemma_wordform_pairs, pickle_file)
 
         print("Extracted and saved lemma-wordform pairs.")
 
-
 '''
 # Пример использования
-opencorpora = OpenCorpora("dict.opcorpora_0_82.xml", "lemma_wordform_pair_full.pkl", "tree_set_full.pkl")
+opencorpora = OpenCorpora("dict.opcorpora_0_82.xml", "lemma_wordform_pair_new.pkl", "tree_set_new.new")
 opencorpora.extract_lemma_wordform_pairs()
-opencorpora.build_trees()
-opencorpora.save_tree_set()
+# opencorpora.build_trees()
+# opencorpora.save_tree_set()
 '''
+
