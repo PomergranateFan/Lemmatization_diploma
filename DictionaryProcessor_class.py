@@ -31,7 +31,7 @@ class BaseDictionaryCorpus:
         with open(self.input_file, 'rb') as file:
             data = pickle.load(file)
 
-        for i, pair in enumerate(data[:]):
+        for pair in data:
             lemma, wordform = pair
             tree = self.processor.build_tree(wordform, lemma)
             self.tree_set.add(tree)
@@ -98,11 +98,9 @@ class OpenCorpora(BaseDictionaryCorpus):
 
         print("Extracted and saved lemma-wordform pairs.")
 
-'''
 # Пример использования
 opencorpora = OpenCorpora("dict.opcorpora_0_82.xml", "lemma_wordform_pair_new.pkl", "tree_set_new.new")
 opencorpora.extract_lemma_wordform_pairs()
-# opencorpora.build_trees()
-# opencorpora.save_tree_set()
-'''
+opencorpora.build_trees()
+opencorpora.save_tree_set()
 
