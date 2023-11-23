@@ -1,5 +1,6 @@
 from suffix_trees import STree
 
+
 class LemmaWordformProcessor:
     def __init__(self, lemma, wordform):
         """
@@ -12,6 +13,15 @@ class LemmaWordformProcessor:
         self.lemma = lemma
         self.wordform = wordform
         self.tree = None
+
+    def set_tree(self, new_tree):
+        """
+        Метод для установки нового дерева.
+
+        Args:
+            new_tree (object): Новое дерево правил в формате tuple.
+        """
+        self.tree = new_tree
 
     def linear_longest_common_substring(self, x, y):
         """
@@ -37,9 +47,9 @@ class LemmaWordformProcessor:
         start_index_y = y.find(lcs)
         end_index_y = start_index_y + len(lcs)
 
-        return (start_index_x, end_index_x, start_index_y, end_index_y)
+        return start_index_x, end_index_x, start_index_y, end_index_y
 
-    def TREE(self):
+    def tree_method(self):
         """
         Метод для построения дерева на основе леммы и словоформы.
         """
@@ -60,12 +70,12 @@ class LemmaWordformProcessor:
         lcs_result = self.linear_longest_common_substring(x, y)
 
         if lcs_result is None:
-            return (x, y)
+            return x, y
         else:
             i_s, i_e, j_s, j_e = lcs_result
             left_tree = self.build_tree(x[:i_s], y[:j_s])
             right_tree = self.build_tree(x[i_e:], y[j_e:])
-            return (left_tree, i_s, right_tree, len(x) - i_e)
+            return left_tree, i_s, right_tree, len(x) - i_e
 
     def get_tree(self):
         """
@@ -76,7 +86,7 @@ class LemmaWordformProcessor:
         """
         return self.tree
 
-    def APPLY(self, x):
+    def apply(self, x):
         """
         Метод для применения дерева правил к словоформе и получения леммы.
 
@@ -96,12 +106,12 @@ class LemmaWordformProcessor:
                     return None
 
                 self.tree = tree_i
-                p = self.APPLY(x[:i_l])  # Создаем префикс
+                p = self.apply(x[:i_l])  # Создаем префикс
                 if p is None:
                     return None
 
                 self.tree = tree_j
-                s = self.APPLY(x[-j_l:])  # Создаем суффикс
+                s = self.apply(x[-j_l:])  # Создаем суффикс
                 if s is None:
                     return None
 
@@ -114,17 +124,18 @@ class LemmaWordformProcessor:
                 else:
                     return None
 
-        #return None  # В случае неправильного формата дерева
 
-
+'''
 # Пример использования
 lemma = "umschauen"
 wordform = "umgeschaut"
 
 processor = LemmaWordformProcessor(lemma, wordform)
-processor.TREE()
+processor.tree_method()
 print(processor.get_tree())
-result = processor.APPLY("umgeschaut")
+result = processor.apply("umgeschaut")
 print(f"Lemma: {result}")
+'''
+
 
 
