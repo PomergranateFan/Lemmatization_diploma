@@ -1,4 +1,10 @@
-def LCS(x, y):
+def longest_common_subsequence(x, y):
+    """
+
+    :param x: word 1
+    :param y: word 2
+    :return: longest common subsequence of word 1 and word 2
+    """
     m, n = len(x), len(y)
     dp = [[0] * (n + 1) for _ in range(m + 1)] # Cоздаем матрицу m+1 на n+1
     max_len = 0  # Для отслеживания длины наибольшей общей подпоследовательности
@@ -23,3 +29,8 @@ def LCS(x, y):
     start_index_y = end_index_y - max_len  # Индекс начала наибольшей общей подпоследовательности в строке y
 
     return (start_index_x, end_index_x, start_index_y, end_index_y)
+
+x = "umgeschaut"
+y = "umschauen"
+result = longest_common_subsequence(x, y)
+print(result)  # Должен вернуть (4, 9, 2, 7)

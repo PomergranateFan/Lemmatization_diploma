@@ -16,15 +16,13 @@ def linear_longest_common_substring(x, y):
     start_index_y = y.find(lcs)
     end_index_y = start_index_y + len(lcs)
 
-    return (start_index_x, end_index_x, start_index_y, end_index_y)
+    return (start_index_x, end_index_x - 1, start_index_y, end_index_y -1)
 
-'''
+
 # Пример использования
-x = "umgeschaut"
-y = "umschauen"
+x = "бобра"
+y = "бобр"
 result = linear_longest_common_substring(x, y)
 print(result)  # Должен вернуть (4, 9, 2, 7)
-
-'''
 
 

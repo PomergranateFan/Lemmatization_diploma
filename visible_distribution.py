@@ -9,7 +9,7 @@ with open('lemma_wordform_pair.pkl', 'rb') as file:
     data = pickle.load(file)
 dic = Counter()
 # Выводим часть данных для проверки
-for i, pair in enumerate(data[:2000]):  # Вывести первые n пар
+for i, pair in enumerate(data[:]):  # Вывести первые n пар
     # print((pair))
     tree = TREE_tuple(pair[1], pair[0])
     lemma = APPLY(tree, pair[1])
@@ -30,7 +30,7 @@ lemmas_counts = list(dic.values())
 plt.figure(figsize=(100, 15))
 plt.bar(lemmas, lemmas_counts)
 plt.xlabel('лемма')
-plt.ylabel('Количество слов')
+plt.ylabel('Количество деревьев')
 plt.title('Распределение слов')
 plt.xticks(rotation=45)  # Поворот меток по оси X для лучшей видимости
 
