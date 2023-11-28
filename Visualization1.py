@@ -33,8 +33,13 @@ with open(output_file_path, 'wb') as output_file:
 
 # Построение графика
 trees, counts = zip(*tree_counter.items())
+trees = [str(tree) for tree in trees]  # Преобразование в список строк
 plt.bar(trees, counts)
 plt.xlabel('Индекс дерева')
 plt.ylabel('Число успешных построений леммы')
 plt.title('График успешных построений леммы для каждого дерева')
+
+# Скрытие оси X
+plt.gca().axes.get_xaxis().set_visible(False)
+plt.savefig('tree_wordform_counts_1.png')  # Сохраняем график
 plt.show()

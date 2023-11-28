@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from LemmaWordformProcessor_class import LemmaWordformProcessor
 
 # Загрузка данных из файлов
-with open('tree_set_new_test.pkl', 'rb') as f:
+with open('tree_set_new.pkl', 'rb') as f:
     tree_set = pickle.load(f)
 
 with open('lemma_wordform_pair_new.pkl', 'rb') as f:
@@ -41,8 +41,12 @@ with open(output_file_path, 'wb') as output_file:
 
 # Построение графика
 trees, counts = zip(*unique_lemma_counter.items())
+trees = [str(tree) for tree in trees]  # Преобразование в список строк
 plt.bar(trees, counts)
 plt.xlabel('Деревья')
-plt.ylabel('Число уникальных потенциально получимых лемм')
+plt.ylabel('Число уникальных лемм')
 plt.title('График уникальных лемм для каждого дерева')
+# Скрытие оси X
+plt.gca().axes.get_xaxis().set_visible(False)
+plt.savefig('unique_lemma_tree_counts.png')  # Сохраняем график
 plt.show()
