@@ -7,26 +7,29 @@ import matplotlib.pyplot as plt
 from LemmaWordformProcessor_class import LemmaWordformProcessor
 
 # Загрузка данных из файлов
-with open('tree_set_full.pkl', 'rb') as f:
+with open('tree_set_new.pkl', 'rb') as f:
     tree_set = pickle.load(f)
 
-with open('lemma_wordform_pair_full.pkl', 'rb') as f:
+with open('lemma_wordform_pair_new.pkl', 'rb') as f:
     pairs = pickle.load(f)
 
 # Создание счетчика
 tree_counter = Counter()
-
+processor = LemmaWordformProcessor()
 # Внешний цикл по всем деревьям
-for i, tree in enumerate(tree_set):
+for tree in tree_set:
     # Внутренний цикл по всем парам
     for pair in pairs:
 
-        processor = LemmaWordformProcessor(pair[0], pair[1]) # класс(лемма ,слоформа)
-        processor.set_tree(tree) # устанавливаем дерево из множества, чтобы не строить его в цикле
-        lemma = processor.apply(pair[1])
+        lemma = processor.apply(tree, pair[1])
 
         if lemma == pair[0]:
-            tree_counter[i] += 1
+            tree_counter[tree] += 1
+
+# Сохранение файла с парами дерево - число уникальных словоформ по которым лемма корректна
+output_file_path = 'tree_wordform_counts_1.pkl'
+with open(output_file_path, 'wb') as output_file:
+    pickle.dump(tree_counter, output_file)
 
 # Построение графика
 trees, counts = zip(*tree_counter.items())
