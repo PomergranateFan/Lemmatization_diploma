@@ -59,7 +59,7 @@ class BaseDictionaryCorpus:
         Returns:
             None
         """
-        raise ValueError("Not implemented error!")
+        raise NotImplementedError("Метод должен быть реализован в подклассе!")
 
 
 class OpenCorpora(BaseDictionaryCorpus):
@@ -99,8 +99,8 @@ class OpenCorpora(BaseDictionaryCorpus):
         print("Extracted and saved lemma-wordform pairs.")
 
 # Пример использования
-opencorpora = OpenCorpora("dict.opcorpora_0_82.xml", "lemma_wordform_pair_new.pkl", "tree_set_new.new")
-opencorpora.extract_lemma_wordform_pairs()
-opencorpora.build_trees()
-opencorpora.save_tree_set()
+# opencorpora = OpenCorpora("dict.opcorpora_0_82.xml", "lemma_wordform_pair_last.pkl", "tree_set_new.pkl")
+# opencorpora.extract_lemma_wordform_pairs()
+# opencorpora.build_trees()
+# opencorpora.save_tree_set()
 
