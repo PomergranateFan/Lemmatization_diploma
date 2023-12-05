@@ -1,4 +1,4 @@
-# Данная программа строит график:
+# Данная программа строит логарифмический график:
 # Число уникальных словоформ, к которым можно потенциально применить данное дерево(результатом работы не будет None).
 
 import pickle
@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 from LemmaWordformProcessor_class import LemmaWordformProcessor
 
 # Загрузка данных из файлов
-with open('tree_set_test.pkl', 'rb') as f:
+with open('tree_set_from_unimorph_test.pkl', 'rb') as f:
     tree_set = pickle.load(f)
 
-with open('lemma_wordform_pair_new.pkl', 'rb') as f:
+with open('pairs_from_unimorph_test.pkl', 'rb') as f:
     pairs = pickle.load(f)
 
 # Заводим процессор как элемент класса
@@ -28,9 +28,13 @@ for tree in tree_set:
             potential_tree_counter[tree] += 1
 
 # Сохранение файла с парами дерево - число уникальных словоформ по которым лемма корректна
-output_file_path = 'potential_tree_wordform_counts_2.pkl'
+output_file_path = 'potential_tree_wordform_counts_2_uniform.pkl'
 with open(output_file_path, 'wb') as output_file:
     pickle.dump(potential_tree_counter, output_file)
+
+
+# with open('potential_tree_wordform_counts_2_uniform.pkl', 'rb') as f:
+#    potential_tree_counter = pickle.load(f)
 
 
 # Построение графика
@@ -38,9 +42,14 @@ trees, counts = zip(*potential_tree_counter.items())
 trees = [str(tree) for tree in trees]  # Преобразование в список строк
 plt.bar(trees, counts)
 plt.xlabel('Деревья')
-plt.ylabel('Число потенциальных построений леммы')
-plt.title('График потенциальных построений леммы для каждого дерева')
+plt.ylabel('Число словоформ, по которым лемма строится потенцильно')
+plt.title('Логарифмический график числа словоформ для потенциальных построений леммы каждым деревом')
 # Скрытие оси X
 plt.gca().axes.get_xaxis().set_visible(False)
-plt.savefig('potential_tree_wordform_counts_2.png')  # Сохраняем график
+
+# Применение логарифмической шкалы к оси Y
+plt.yscale('log')
+
+plt.savefig('potential_tree_wordform_counts_2_uniform_log.png')  # Сохраняем график
+
 plt.show()

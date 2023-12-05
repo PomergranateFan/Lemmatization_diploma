@@ -33,8 +33,8 @@ with open(output_file_path, 'wb') as output_file:
 
 # Загрузка данных из файла
 # ЗАМЕЧАНИЕ: хорошо бы посмотреть на этот график для пар не уникальных, а всех.
-with open('tree_wordform_counts_1_uniform.pkl', 'rb') as f:
-    tree_counter = pickle.load(f)
+# with open('tree_wordform_counts_1_uniform.pkl', 'rb') as f:
+#    tree_counter = pickle.load(f)
 
 # Построение логарифмического графика
 trees, counts = zip(*tree_counter.items())
