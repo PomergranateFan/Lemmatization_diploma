@@ -98,6 +98,31 @@ class OpenCorpora(BaseDictionaryCorpus):
 
         print("Extracted and saved lemma-wordform pairs.")
 
+    def extract_lemma_wordform_pairs_not_unique(self):
+        """
+        Метод для извлечения неуникальных пар лемма-словоформа из исходного XML-файла OpenCorpora.
+
+        Проходит через XML-файл OpenCorpora и извлекает пары лемма-словоформа.
+
+        Returns:
+            None
+        """
+        tree = ET.parse(self.data_path)
+        root = tree.getroot()
+        lemma_wordform_pairs = []
+
+        for lemma in root.find("lemmata").iter("lemma"):
+            lemma_text = lemma.find("l").get("t")
+            for wordform in lemma.iter("f"):
+                wordform_text = wordform.get("t")
+                lemma_wordform_pairs.append((lemma_text, wordform_text))
+
+        with open(self.input_file, "wb") as pickle_file:
+            pickle.dump(lemma_wordform_pairs, pickle_file)
+
+        print("Extracted and saved not unique lemma-wordform pairs.")
+
+
 class Unimorph(BaseDictionaryCorpus):
     def __init__(self, data_path, input_file, output_file):
         """
@@ -138,11 +163,46 @@ class Unimorph(BaseDictionaryCorpus):
                     unique_pairs.add((lemma, wordform))
 
         # Открываем файл для записи в бинарном режиме с использованием pickle
-        with open('self.input_file', 'wb') as output_file:
+        with open(self.input_file, 'wb') as output_file:
 
             pickle.dump(unique_pairs, output_file)
 
         print("Extracted and saved lemma-wordform pairs.")
+
+
+    def extract_lemma_wordform_pairs_not_unique(self):
+        """
+        Метод для извлечения неуникальных пар лемма-словоформа из исходного txt-файла словаря unimorph.
+
+        Проходит через файл и извлекает пары лемма-словоформа.
+
+        Returns:
+            None
+        """
+
+        # Открываем файл для чтения
+        with open(self.data_path, 'r', encoding='utf-8') as file:
+            # Создаем set для хранения уникальных пар лемма-словоформа
+            pairs = []
+
+            # Читаем строки файла
+            for line in file:
+                # Разделяем строку по символу табуляции
+                parts = line.strip().split('\t')
+
+                # Проверяем, что в строке есть три части
+                if len(parts) == 3:
+                    lemma, wordform, _ = parts  # Извлекаем лемму и словоформу
+
+                    # Добавляем уникальные пары в set
+                    pairs.append((lemma, wordform))
+
+        # Открываем файл для записи в бинарном режиме с использованием pickle
+        with open(self.input_file, 'wb') as output_file:
+
+            pickle.dump(pairs, output_file)
+
+        print("Extracted and saved not unique lemma-wordform pairs.")
 
 
 # Пример использования
@@ -151,7 +211,7 @@ class Unimorph(BaseDictionaryCorpus):
 # opencorpora.build_trees()
 # opencorpora.save_tree_set()
 
-unimorph = Unimorph("rus.txt", "pairs_from_unimorph.pkl", "tree_set_from_unimorph_test.pkl" )
-unimorph.extract_lemma_wordform_pairs()
-unimorph.build_trees()
-unimorph.save_tree_set()
+# unimorph = Unimorph("rus.txt", "pairs_from_unimorph_not_unique.pkl", "tree_set_from_unimorph_test.pkl" )
+# unimorph.extract_lemma_wordform_pairs_not_unique()
+# unimorph.build_trees()
+# unimorph.save_tree_set()
