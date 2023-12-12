@@ -1,9 +1,10 @@
 # Данная програма будет строить график частотного распределения деревьев,
-# на котором мы надеемся увидеть распределение парето.
+# на котором мы надеемся увидеть распределение Парето.
 
 import pickle
 import matplotlib.pyplot as plt
 from LemmaWordformProcessor_class import LemmaWordformProcessor
+from collections import defaultdict
 
 # Загрузка данных из файлов
 with open('tree_set_from_unimorph_test.pkl', 'rb') as f:
@@ -15,7 +16,7 @@ with open('pairs_from_unimorph_not_unique.pkl', 'rb') as f:
 # Заводим процессор как элемент класса
 processor = LemmaWordformProcessor()
 
-f_x = {}
+f_x = defaultdict(int)
 
 # Внешний цикл по всем деревьям
 for tree in tree_set:
@@ -28,13 +29,9 @@ for tree in tree_set:
         if lemma is not None:
             x_counter += 1  # Увеличиваем счетчик
 
-    if (x_counter in f_x):
-        f_x[x_counter] += 1
-    else:
-        f_x[x_counter] = 1
+    f_x[x_counter] += 1
 
-
-# Сохранение файла с парами дерево - число неуникальных словоформ по которым лемма корректна
+# Сохранение файла с парами дерево - число неуникальных словоформ по которым лемма потенциальна
 output_file_path = 'tree_numbers_counter_uniform_not_unique.pkl'
 with open(output_file_path, 'wb') as output_file:
     pickle.dump(f_x, output_file)
