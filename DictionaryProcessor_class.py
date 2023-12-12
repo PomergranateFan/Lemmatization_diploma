@@ -123,6 +123,77 @@ class OpenCorpora(BaseDictionaryCorpus):
         print("Extracted and saved not unique lemma-wordform pairs.")
 
 
+class OpenCorporaCorpus(BaseDictionaryCorpus):
+    def __init__(self, data_path, input_file, output_file):
+        """
+        Инициализация класса OpenCorporaCorpus для работы с данными корпуса OpenCorpora.
+
+        Args:
+            data_path (str): Путь к исходным данным OpenCorpora (XML-файл корпуса OpenCorpora).
+            input_file (str): Путь к файлу, в котором будут сохранены пары лемма-словоформа.
+            output_file (str): Путь к файлу, в котором будут сохранены деревья.
+        """
+        super().__init__(data_path, input_file, output_file)
+
+    def extract_lemma_wordform_pairs(self):
+        """
+        Метод для извлечения пар лемма-словоформа из исходного XML-файла annot.opcorpora.xml
+
+        Проходит через XML-файл OpenCorpora и извлекает пары лемма-словоформа.
+
+        Returns:
+            None
+        """
+        root = ET.parse(self.data_path)
+
+        lemma_word_pairs = set()
+
+        for sentence in root.iter('sentence'):
+            for token in sentence.iter('token'):
+                # Проверяем, что у токена нет <g v="PNCT">
+                if token.find('.//g[@v="PNCT"]') is None:
+                    lemma_elems = token.findall('.//l[@t]')
+                    if lemma_elems:
+                        for lemma_elem in lemma_elems:
+                            lemma = lemma_elem.get('t')
+                            wordform = token.get('text')
+                            lemma_word_pairs.add((lemma, wordform))
+
+        with open(self.input_file, "wb") as pickle_file:
+            pickle.dump(lemma_word_pairs, pickle_file)
+
+        print("Extracted and saved lemma-wordform pairs.")
+
+    def extract_lemma_wordform_pairs_not_unique(self):
+        """
+        Метод для извлечения пар лемма-словоформа из исходного XML-файла annot.opcorpora.xml
+
+        Проходит через XML-файл OpenCorpora и извлекает пары лемма-словоформа.
+
+        Returns:
+            None
+        """
+        root = ET.parse("annot.opcorpora.xml")
+
+        lemma_word_pairs = []
+
+        for sentence in root.iter('sentence'):
+            for token in sentence.iter('token'):
+                # Проверяем, что у токена нет <g v="PNCT">
+                if token.find('.//g[@v="PNCT"]') is None:
+                    lemma_elems = token.findall('.//l[@t]')
+                    if lemma_elems:
+                        for lemma_elem in lemma_elems:
+                            lemma = lemma_elem.get('t')
+                            wordform = token.get('text')
+                            lemma_word_pairs.append((lemma, wordform))
+
+        with open(self.input_file, "wb") as pickle_file:
+            pickle.dump(lemma_word_pairs, pickle_file)
+
+        print("Extracted and saved not unique lemma-wordform pairs from corpus.")
+
+
 class Unimorph(BaseDictionaryCorpus):
     def __init__(self, data_path, input_file, output_file):
         """
@@ -207,7 +278,7 @@ class Unimorph(BaseDictionaryCorpus):
 
 # Пример использования
 # opencorpora = OpenCorpora("dict.opcorpora_0_82.xml", "lemma_wordform_pair_last.pkl", "tree_set_new.pkl")
-# opencorpora.extract_lemma_wordform_pairs()
+# opencorpora.extract_lemma_wordform_pairs_not_unique()
 # opencorpora.build_trees()
 # opencorpora.save_tree_set()
 
@@ -215,3 +286,8 @@ class Unimorph(BaseDictionaryCorpus):
 # unimorph.extract_lemma_wordform_pairs_not_unique()
 # unimorph.build_trees()
 # unimorph.save_tree_set()
+
+# opencorporacorpus = OpenCorporaCorpus("annot.opcorpora.xml", "pair_OpenCorpora_corpus.pkl", "tree_set_OpenCorpora_corpus.pkl")
+# opencorporacorpus.extract_lemma_wordform_pairs_not_unique()
+# opencorporacorpus.build_trees()
+# opencorporacorpus.save_tree_set()
