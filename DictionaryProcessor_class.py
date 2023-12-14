@@ -1,6 +1,7 @@
 import pickle
 import xml.etree.ElementTree as ET
 from LemmaWordformProcessor_class import LemmaWordformProcessor
+from LemmaWordformProcessorSES_class import LemmaWordformProcessorSES
 
 
 class BaseDictionaryCorpus:
@@ -17,7 +18,9 @@ class BaseDictionaryCorpus:
         self.input_file = input_file
         self.output_file = output_file
         self.tree_set = set()
+        self.ses_set = set()
         self.processor = LemmaWordformProcessor()
+        self.processor_ses = LemmaWordformProcessorSES()
 
     def build_trees(self):
         """
@@ -38,6 +41,26 @@ class BaseDictionaryCorpus:
 
         file.close()
 
+    def build_ses(self):
+        """
+        Метод для построения правил SES на основе пар лемма-словоформа.
+
+        Проходит через пары лемма-словоформа и строит деревья с помощью LemmaWordformProcessorSES.
+
+        Returns:
+            None
+        """
+        with open(self.input_file, 'rb') as file:
+            data = pickle.load(file)
+
+        for pair in data:
+            lemma, wordform = pair
+            ses = self.processor_ses.find_ses(wordform, lemma)
+
+            self.ses_set.add(ses)
+
+        file.close()
+
     def save_tree_set(self):
         """
         Метод для сохранения деревьев в файл.
@@ -49,6 +72,19 @@ class BaseDictionaryCorpus:
         """
         with open(self.output_file, 'wb') as file:
             pickle.dump(self.tree_set, file)
+
+    def save_ses_set(self):
+        """
+        Метод для сохранения правил SES в файл.
+
+        Сохраняет построенные SES в файл в формате pickle.
+
+        Returns:
+            None
+        """
+        with open(self.output_file, 'wb') as file:
+            pickle.dump(self.ses_set, file)
+
 
     def extract_lemma_wordform_pairs(self):
         """
@@ -291,3 +327,8 @@ class Unimorph(BaseDictionaryCorpus):
 # opencorporacorpus.extract_lemma_wordform_pairs_not_unique()
 # opencorporacorpus.build_trees()
 # opencorporacorpus.save_tree_set()
+
+unimorph = Unimorph("rus.txt", "pairs_Unimorph_not_unique.pkl", "ses_set_from_unimorph.pkl" )
+# unimorph.extract_lemma_wordform_pairs_not_unique()
+unimorph.build_ses()
+unimorph.save_ses_set()

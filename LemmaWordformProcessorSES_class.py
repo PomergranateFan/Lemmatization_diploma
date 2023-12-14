@@ -14,8 +14,8 @@ class LemmaWordformProcessorSES:
         """
         Находит последовательность редактирования (SES) между двумя строками.
 
-        :param str_a: Первая строка
-        :param str_b: Вторая строка
+        :param str_a: Первая строка(слоформа)
+        :param str_b: Вторая строка(лемма)
         :return: Список операций для приведения str_a к str_b
         """
         # Развернем строки для лучшей работы алгоритма
@@ -53,7 +53,7 @@ class LemmaWordformProcessorSES:
                 i -= 1
                 j -= 1
 
-        return ses
+        return tuple(ses)
 
     def apply_ses(self, ses, word):
         """
