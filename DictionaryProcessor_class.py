@@ -2,6 +2,9 @@ import pickle
 import xml.etree.ElementTree as ET
 from LemmaWordformProcessor_class import LemmaWordformProcessor
 from LemmaWordformProcessorSES_class import LemmaWordformProcessorSES
+from conllu import parse
+import os
+
 
 
 class BaseDictionaryCorpus:
@@ -312,6 +315,98 @@ class Unimorph(BaseDictionaryCorpus):
         print("Extracted and saved not unique lemma-wordform pairs.")
 
 
+class SynTagRusCorpus(BaseDictionaryCorpus):
+    def __init__(self, data_path, input_file, output_file):
+        """
+        Инициализация класса OpenCorporaCorpus для работы с данными корпуса SynTagRus.
+
+        Args:
+            data_path (str): Путь к исходным данным SynTagRus (папка SynTagRus, содержащая 5 файлов .conllu).
+            input_file (str): Путь к файлу, в котором будут сохранены пары лемма-словоформа.
+            output_file (str): Путь к файлу, в котором будут сохранены деревья.
+        """
+        super().__init__(data_path, input_file, output_file)
+
+    def extract_lemma_wordform_pairs(self):
+        """
+        Метод для извлечения пар лемма-словоформа из исходного conllu-файла
+
+        Проходит по connlu-файлам папки SynTagRus и извлекает уникальные пары лемма-словоформа.
+
+        Returns:
+            None
+        """
+
+        lemma_word_pairs = set()
+        # Получаем список файлов в указанной папке
+        files = [f for f in os.listdir(self.data_path) if f.endswith('.conllu')]
+
+        # Итерируемся по всем файлам в папке
+        for file_name in files:
+
+            file_path = os.path.join(self.data_path, file_name)
+
+            with open(file_path, 'r', encoding='utf-8') as file:
+                data = file.read()
+
+            sentences = parse(data)
+
+            # Итерируемся по предложениям и извлекаем словоформы и леммы
+            for sentence in sentences:
+                for token in sentence:
+                    # Проверяем, является ли токен пунктуацией
+                    if token['upos'] != 'PUNCT':
+                        # Извлекаем словоформу и лемму
+                        wordform = token['form']
+                        lemma = token['lemma']
+                        lemma_word_pairs.add((lemma, wordform))
+
+        with open(self.input_file, "wb") as pickle_file:
+            pickle.dump(lemma_word_pairs, pickle_file)
+
+        print("Extracted and saved unique lemma-wordform pairs from SynTagRus corpus.")
+
+    def extract_lemma_wordform_pairs_not_unique(self):
+        """
+        Метод для извлечения пар лемма-словоформа из исходного conllu-файла
+
+        Проходит по connlu-файлам папки SynTagRus и извлекает неуникальные пары лемма-словоформа.
+
+        Returns:
+            None
+        """
+
+        lemma_word_pairs = []
+
+        # Получаем список файлов в указанной папке
+        files = [f for f in os.listdir(self.data_path) if f.endswith('.conllu')]
+
+        # Итерируемся по всем файлам в папке
+        for file_name in files:
+
+            file_path = os.path.join(self.data_path, file_name)
+
+            with open(file_path, 'r', encoding='utf-8') as file:
+                data = file.read()
+
+            sentences = parse(data)
+
+            # Итерируемся по предложениям и извлекаем словоформы и леммы
+            for sentence in sentences:
+                for token in sentence:
+                    # Проверяем, является ли токен пунктуацией
+                    if token['upos'] != 'PUNCT':
+                        # Извлекаем словоформу и лемму
+                        wordform = token['form']
+                        lemma = token['lemma']
+                        lemma_word_pairs.append((lemma, wordform))
+
+        with open(self.input_file, "wb") as pickle_file:
+            pickle.dump(lemma_word_pairs, pickle_file)
+
+        print("Extracted and saved not unique lemma-wordform pairs from SynTagRus corpus.")
+
+
 # Пример использования
 # opencorpora = OpenCorpora("dict.opcorpora_0_82.xml", "lemma_wordform_pair_last.pkl", "tree_set_new.pkl")
 # opencorpora.extract_lemma_wordform_pairs_not_unique()
@@ -323,12 +418,12 @@ class Unimorph(BaseDictionaryCorpus):
 # unimorph.build_trees()
 # unimorph.save_tree_set()
 
-# opencorporacorpus = OpenCorporaCorpus("annot.opcorpora.xml", "pair_OpenCorpora_corpus.pkl", "tree_set_OpenCorpora_corpus.pkl")
+# opencorporacorpus = OpenCorporaCorpus("annot.opcorpora.xml", "pairs_OpenCorpora_corpus_not_unique.pkl", "tree_set_OpenCorpora_corpus.pkl")
 # opencorporacorpus.extract_lemma_wordform_pairs_not_unique()
 # opencorporacorpus.build_trees()
 # opencorporacorpus.save_tree_set()
 
-unimorph = Unimorph("rus.txt", "pairs_Unimorph_not_unique.pkl", "ses_set_from_unimorph.pkl" )
+# unimorph = Unimorph("rus.txt", "pairs_Unimorph_not_unique.pkl", "ses_set_from_unimorph.pkl" )
 # unimorph.extract_lemma_wordform_pairs_not_unique()
-unimorph.build_ses()
-unimorph.save_ses_set()
+# unimorph.build_ses()
+# unimorph.save_ses_set()
