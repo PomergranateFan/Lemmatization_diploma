@@ -427,3 +427,8 @@ class SynTagRusCorpus(BaseDictionaryCorpus):
 # unimorph.extract_lemma_wordform_pairs_not_unique()
 # unimorph.build_ses()
 # unimorph.save_ses_set()
+
+# syntagrus = SynTagRusCorpus("SynTagRus", "pairs_SynTagRus_corpus_not_unique.pkl ", "tree_set_SynTagRus_corpus.pkl")
+# syntagrus.extract_lemma_wordform_pairs_not_unique()
+# syntagrus.build_trees()
+# syntagrus.save_tree_set()
