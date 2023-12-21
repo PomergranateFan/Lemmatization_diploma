@@ -2,6 +2,14 @@
 import pickle
 from LemmaWordformProcessor_class import LemmaWordformProcessor
 from collections import defaultdict
+import itertools
+
+def ddict2dict(d):
+    for k, v in d.items():
+        if isinstance(v, dict):
+            d[k] = ddict2dict(v)
+    return dict(d)
+
 
 # Загрузка данных из файлов
 with open('tree_set_from_unimorph_test.pkl', 'rb') as f:
@@ -61,7 +69,7 @@ result_dict = defaultdict(lambda: {'f_x': 0, 'trees': [], 'pairs': []})
 # Внешний цикл по всем деревьям
 for tree in tree_set:
     x_counter = 0
-    current_dict = {'trees': [], 'pairs': []}
+    pairs_list = []
 
     # Внутренний цикл по всем парам
     for pair in pairs:
@@ -71,17 +79,16 @@ for tree in tree_set:
         if lemma is not None:
             x_counter += 1  # Увеличиваем счетчик
 
-            # Добавляем дерево и пару в текущий словарь
-            if len(current_dict['trees']) < 5:
-                current_dict['trees'].append(tree)
-            if len(current_dict['pairs']) < 5:
-                current_dict['pairs'].append(pair)
+            if len(pairs_list) < 5:
+                pairs_list.append(pair)
 
     # Обновляем значения в общем словаре
     result_dict[x_counter]['f_x'] += 1
-    result_dict[x_counter]['trees'].extend(current_dict['trees'])
-    result_dict[x_counter]['pairs'].extend(current_dict['pairs'])
+    result_dict[x_counter]['trees'].append(tree)
+    result_dict[x_counter]['pairs'].extend(pairs_list)
+
+result_dict_not_default = ddict2dict(result_dict)
 
 output_file_path = 'uni_f_x_potential_all.pkl'
 with open(output_file_path, 'wb') as output_file:
-    pickle.dump(result_dict, output_file)
+    pickle.dump(result_dict_not_default, output_file)
