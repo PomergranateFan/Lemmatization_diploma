@@ -45,7 +45,7 @@ fig = make_subplots(rows=4, cols=3, subplot_titles=[
     '# деревьев корректно строят лемму x раз',
     '# деревьев потенциально строят лемму x раз',
     '# деревьев строят конкретную лемму x раз'
-])
+], shared_xaxes=True, shared_yaxes=True)
 
 for i, data in enumerate([data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12], start=1):
     row = (i - 1) // 3 + 1
@@ -68,7 +68,7 @@ for i, data in enumerate([data1, data2, data3, data4, data5, data6, data7, data8
     ), row=row, col=col)
 
     # Set logarithmic scale for both x and y axes
-    fig.update_xaxes(type='log', row=row, col=col)
-    fig.update_yaxes(type='log', row=row, col=col)
+    fig.update_xaxes(type='log', range=[0, 6], row=row, col=col)
+    fig.update_yaxes(type='log', range=[0, 3], row=row, col=col)
 
 fig.show()
