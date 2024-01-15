@@ -1,10 +1,10 @@
+# данная программа строит интерактивный график, в котором
+# для каждой точки показываются примеры слов и деревьев
+
 import pickle
-
-
 import plotly.express as px
 import random
 from LemmaWordformProcessor_class import LemmaWordformProcessor
-
 
 with open('uni_f_x_potential_all.pkl', 'rb') as f:
     result_dict = pickle.load(f)
@@ -24,6 +24,7 @@ for x_counter, values in result_dict.items():
 
     # Выбираем случайные 3 дерева и пары из всей выборки
     #random_trees = random.sample(values['trees'], min(2, len(values['trees'])))
+    values['pairs'] = [pair for pair in values['pairs'] if ' ' not in pair[0]]
     random_pairs = random.sample(values['pairs'], min(3, len(values['pairs'])))
     pairs = []
     for lemma, wordform in random_pairs:
