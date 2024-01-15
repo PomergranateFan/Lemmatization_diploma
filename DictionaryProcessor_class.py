@@ -39,7 +39,7 @@ class BaseDictionaryCorpus:
 
         for pair in data:
             lemma, wordform = pair
-            tree = self.processor.build_tree(wordform, lemma)
+            tree = self.processor.build_tree(wordform.lower(), lemma.lower())  # Convert to lowercase
             self.tree_set.add(tree)
 
         file.close()
@@ -58,8 +58,7 @@ class BaseDictionaryCorpus:
 
         for pair in data:
             lemma, wordform = pair
-            ses = self.processor_ses.find_ses(wordform, lemma)
-
+            ses = self.processor_ses.find_ses(wordform.lower(), lemma.lower())  # Convert to lowercase
             self.ses_set.add(ses)
 
         file.close()
@@ -130,7 +129,7 @@ class OpenCorpora(BaseDictionaryCorpus):
             lemma_text = lemma.find("l").get("t")
             for wordform in lemma.iter("f"):
                 wordform_text = wordform.get("t")
-                lemma_wordform_pairs.add((lemma_text, wordform_text))
+                lemma_wordform_pairs.add((lemma_text.lower(), wordform_text.lower()))
 
         with open(self.input_file, "wb") as pickle_file:
             pickle.dump(lemma_wordform_pairs, pickle_file)
@@ -154,7 +153,7 @@ class OpenCorpora(BaseDictionaryCorpus):
             lemma_text = lemma.find("l").get("t")
             for wordform in lemma.iter("f"):
                 wordform_text = wordform.get("t")
-                lemma_wordform_pairs.append((lemma_text, wordform_text))
+                lemma_wordform_pairs.append((lemma_text.lower(), wordform_text.lower()))
 
         with open(self.input_file, "wb") as pickle_file:
             pickle.dump(lemma_wordform_pairs, pickle_file)
@@ -196,7 +195,7 @@ class OpenCorporaCorpus(BaseDictionaryCorpus):
                         for lemma_elem in lemma_elems:
                             lemma = lemma_elem.get('t')
                             wordform = token.get('text')
-                            lemma_word_pairs.add((lemma, wordform))
+                            lemma_word_pairs.add((lemma.lower(), wordform.lower()))
 
         with open(self.input_file, "wb") as pickle_file:
             pickle.dump(lemma_word_pairs, pickle_file)
@@ -225,7 +224,7 @@ class OpenCorporaCorpus(BaseDictionaryCorpus):
                         for lemma_elem in lemma_elems:
                             lemma = lemma_elem.get('t')
                             wordform = token.get('text')
-                            lemma_word_pairs.append((lemma, wordform))
+                            lemma_word_pairs.append((lemma.lower(), wordform.lower()))
 
         with open(self.input_file, "wb") as pickle_file:
             pickle.dump(lemma_word_pairs, pickle_file)
@@ -270,7 +269,7 @@ class Unimorph(BaseDictionaryCorpus):
                     lemma, wordform, _ = parts  # Извлекаем лемму и словоформу
 
                     # Добавляем уникальные пары в set
-                    unique_pairs.add((lemma, wordform))
+                    unique_pairs.add((lemma.lower(), wordform.lower()))
 
         # Открываем файл для записи в бинарном режиме с использованием pickle
         with open(self.input_file, 'wb') as output_file:
@@ -305,7 +304,7 @@ class Unimorph(BaseDictionaryCorpus):
                     lemma, wordform, _ = parts  # Извлекаем лемму и словоформу
 
                     # Добавляем уникальные пары в set
-                    pairs.append((lemma, wordform))
+                    pairs.append((lemma.lower(), wordform.lower()))
 
         # Открываем файл для записи в бинарном режиме с использованием pickle
         with open(self.input_file, 'wb') as output_file:
@@ -359,7 +358,7 @@ class SynTagRusCorpus(BaseDictionaryCorpus):
                         # Извлекаем словоформу и лемму
                         wordform = token['form']
                         lemma = token['lemma']
-                        lemma_word_pairs.add((lemma, wordform))
+                        lemma_word_pairs.add((lemma.lower(), wordform.lower()))
 
         with open(self.input_file, "wb") as pickle_file:
             pickle.dump(lemma_word_pairs, pickle_file)
@@ -399,7 +398,7 @@ class SynTagRusCorpus(BaseDictionaryCorpus):
                         # Извлекаем словоформу и лемму
                         wordform = token['form']
                         lemma = token['lemma']
-                        lemma_word_pairs.append((lemma, wordform))
+                        lemma_word_pairs.append((lemma.lower(), wordform.lowe()))
 
         with open(self.input_file, "wb") as pickle_file:
             pickle.dump(lemma_word_pairs, pickle_file)
