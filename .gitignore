@@ -6,3 +6,8 @@ venv
 *.png
 *.txt
 SynTagRus
+gsd
+poetry
+pud
+taiga
+*.zip

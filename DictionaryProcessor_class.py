@@ -1,7 +1,7 @@
 import pickle
 import xml.etree.ElementTree as ET
-from LemmaWordformProcessor_class import LemmaWordformProcessor
 from LemmaWordformProcessorSES_class import LemmaWordformProcessorSES
+from LemmaWordformProcessor_class import LemmaWordformProcessor
 from conllu import parse
 import os
 
@@ -211,7 +211,8 @@ class OpenCorporaCorpus(BaseDictionaryCorpus):
         Returns:
             None
         """
-        root = ET.parse("annot.opcorpora.xml")
+        # root = ET.parse("annot.opcorpora.xml")
+        root = ET.parse(self.data_path)
 
         lemma_word_pairs = []
 
@@ -388,6 +389,9 @@ class SynTagRusCorpus(BaseDictionaryCorpus):
             with open(file_path, 'r', encoding='utf-8') as file:
                 data = file.read()
 
+            # data_file = open(file_path, "r", encoding="utf-8")
+
+
             sentences = parse(data)
 
             # Итерируемся по предложениям и извлекаем словоформы и леммы
@@ -398,7 +402,7 @@ class SynTagRusCorpus(BaseDictionaryCorpus):
                         # Извлекаем словоформу и лемму
                         wordform = token['form']
                         lemma = token['lemma']
-                        lemma_word_pairs.append((lemma.lower(), wordform.lowe()))
+                        lemma_word_pairs.append((lemma.lower(), wordform.lower()))
 
         with open(self.input_file, "wb") as pickle_file:
             pickle.dump(lemma_word_pairs, pickle_file)
@@ -427,7 +431,7 @@ class SynTagRusCorpus(BaseDictionaryCorpus):
 # unimorph.build_ses()
 # unimorph.save_ses_set()
 
-# syntagrus = SynTagRusCorpus("SynTagRus", "pairs_SynTagRus_corpus_not_unique.pkl ", "tree_set_SynTagRus_corpus.pkl")
+# syntagrus = SynTagRusCorpus("syntagrus", "pairs_SynTagRus_corpus_not_unique.pkl ", "tree_set_SynTagRus_corpus.pkl")
 # syntagrus.extract_lemma_wordform_pairs_not_unique()
 # syntagrus.build_trees()
 # syntagrus.save_tree_set()
