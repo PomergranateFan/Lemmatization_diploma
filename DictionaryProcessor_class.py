@@ -8,7 +8,7 @@ import os
 
 
 class BaseDictionaryCorpus:
-    def __init__(self, data_path, input_file, output_file):
+    def __init__(self, input_file, output_file, data_path = None):
         """
         Инициализация базового класса для работы с словарями и корпусами.
 

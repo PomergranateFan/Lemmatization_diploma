@@ -1,3 +1,4 @@
+# Программа строит 12 графиков частотного распределения на одном графике, чтобы увидеть выполнение или невыполнение закона ципфа.
 import pickle
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots

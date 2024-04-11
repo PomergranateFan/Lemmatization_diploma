@@ -2,7 +2,9 @@ from LemmaWordformProcessor_class import LemmaWordformProcessor
 from Visualization_class import VisualizationProcessor
 from DictionaryProcessor_class import SynTagRusCorpus
 from DictionaryProcessor_class import OpenCorporaCorpus
+from DictionaryProcessor_class import BaseDictionaryCorpus
 
+'''
 ########################################################################################################################
 
 # Спарсим пары лемма-словоформа из корпуса SynTagRus из Universal Dependencies и построим деревья для них
@@ -87,4 +89,36 @@ processor_OpenCorpora = LemmaWordformProcessor()
 visualization_processor = VisualizationProcessor(processor_OpenCorpora, 'tree_set_OpenCorpora_corpus.pkl',
                                                   'pairs_OpenCorpora_corpus_not_unique.pkl', 'OpenCorpora_f_x_dict.pkl')
 
+visualization_processor.build_dictionary()
+'''
+########################################################################################################################
+########################################################################################################################
+'''
+# Построим деревья для пар из для последней версии оригинала СинТагРуса ~ 1.5 млн словоформ
+syntagrus_original = BaseDictionaryCorpus("pairs_SynTagRus_original_corpus_not_unique.pkl", "tree_set_SynTagRus_original_corpus.pkl")
+# syntagrus_original.extract_lemma_wordform_pairs_not_unique()
+syntagrus_original.build_trees()
+syntagrus_original.save_tree_set()
+
+# Построим словарь частотности с примерами деревьев и пар
+processor_syntagrus_original = LemmaWordformProcessor()
+visualization_processor = VisualizationProcessor(processor_syntagrus_original, 'tree_set_SynTagRus_original_corpus.pkl',
+                                                  'pairs_SynTagRus_original_corpus_not_unique.pkl', 'syntagrus_original_f_x_dict.pkl')
+visualization_processor.build_dictionary()
+'''
+
+########################################################################################################################
+########################################################################################################################
+
+
+# Построим деревья для пар из для последней версии оригинала СинТагРуса ~ 1.5 млн словоформ
+RNC_main_corpus = BaseDictionaryCorpus("pairs_RNC_main_corpus_not_unique.pkl", "tree_set_RNC_main_corpus.pkl")
+# syntagrus_original.extract_lemma_wordform_pairs_not_unique()
+RNC_main_corpus.build_trees()
+RNC_main_corpus.save_tree_set()
+
+# Построим словарь частотности с примерами деревьев и пар
+processor_RNC_main_corpus = LemmaWordformProcessor()
+visualization_processor = VisualizationProcessor(processor_RNC_main_corpus, 'tree_set_RNC_main_corpus.pkl',
+                                                  'pairs_RNC_main_corpus_not_unique.pkl', 'RNC_main_f_x_dict.pkl')
 visualization_processor.build_dictionary()
