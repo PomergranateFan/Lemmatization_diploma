@@ -4,7 +4,7 @@
 import pickle
 import plotly.express as px
 import random
-from LemmaWordformProcessor_class import LemmaWordformProcessor
+from lemma_wordform_processor import LemmaWordformProcessor
 
 with open('uni_f_x_potential_all.pkl', 'rb') as f:
     result_dict = pickle.load(f)

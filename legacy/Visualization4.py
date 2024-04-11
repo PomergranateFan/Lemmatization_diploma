@@ -4,7 +4,7 @@
 import pickle
 from collections import Counter
 import matplotlib.pyplot as plt
-from LemmaWordformProcessor_class import LemmaWordformProcessor
+from lemma_wordform_processor import LemmaWordformProcessor
 
 # Загрузка данных из файлов
 with open('tree_set_new_test.pkl', 'rb') as f:

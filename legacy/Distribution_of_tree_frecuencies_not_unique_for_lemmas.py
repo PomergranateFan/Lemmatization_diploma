@@ -4,7 +4,7 @@
 
 import pickle
 import matplotlib.pyplot as plt
-from LemmaWordformProcessor_class import LemmaWordformProcessor
+from lemma_wordform_processor import LemmaWordformProcessor
 from collections import defaultdict
 
 # Загрузка данных из файлов

@@ -4,7 +4,7 @@
 import plotly.express as px
 import random
 import pickle
-from LemmaWordformProcessor_class import LemmaWordformProcessor
+from lemma_wordform_processor import LemmaWordformProcessor
 from collections import defaultdict
 
 def ddict2dict(d):

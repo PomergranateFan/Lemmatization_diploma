@@ -1,8 +1,9 @@
-from LemmaWordformProcessor_class import LemmaWordformProcessor
+from lemma_wordform_processor import LemmaWordformProcessor
 from Visualization_class import VisualizationProcessor
-from DictionaryProcessor_class import SynTagRusCorpus
-from DictionaryProcessor_class import OpenCorporaCorpus
-from DictionaryProcessor_class import BaseDictionaryCorpus
+from corpus_processor import UniversalDependenciesCorpus
+from corpus_processor import OpenCorporaCorpus
+from corpus_processor import BaseDictionaryCorpus
+from config import config
 
 '''
 ########################################################################################################################
@@ -119,6 +120,31 @@ RNC_main_corpus.save_tree_set()
 
 # Построим словарь частотности с примерами деревьев и пар
 processor_RNC_main_corpus = LemmaWordformProcessor()
+
 visualization_processor = VisualizationProcessor(processor_RNC_main_corpus, config['RNC']['trees'],
                                                   config['RNC']['pairs'], config['RNC']['dict'])
 visualization_processor.build_dictionary()
+
+
+def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, corpus_class_name):
+    '''
+    Функция создает частотный словарь для разных словарей и корпусов
+    :param lemma_wordform_processor_class_name: Имя процессора построения леммы в зависимости от типа правил
+    :param corpus_name: имя корпуса который используется для построения словаря
+    :return: -
+    '''
+
+    processor = lemma_wordform_processor_class_name()
+
+    if not config[corpus_name]['pairs'].exists():
+        corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['trees'], processor, config[corpus_name]['corpus'])
+        corpus.extract_lemma_wordform_pairs_not_unique()
+
+    if not config[corpus_name]['trees'].exists():
+        corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['trees'], processor, config[corpus_name]['corpus'])
+        corpus.build_rules()
+        corpus.save_rules_set()
+
+    if not config[corpus_name]['dict'].exists():
+        visualization_processor = VisualizationProcessor(processor, config[corpus_name]['trees'], config[corpus_name]['pairs'], config[corpus_name]['dict'])
+        visualization_processor.build_dictionary()

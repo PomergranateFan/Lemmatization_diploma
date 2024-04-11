@@ -1,7 +1,38 @@
 import numpy as np
 import pickle
 import pandas as pd
+from config import config
+from corpus_processor import UniversalDependenciesCorpus
+from lemma_wordform_processor import LemmaWordformProcessorTree
+from Visualization_class import VisualizationProcessor
 
+
+def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, corpus_class_name):
+    '''
+    Функция создает частотный словарь для разных словарей и корпусов
+    :param lemma_wordform_processor_class_name: Имя процессора построения леммы в зависимости от типа правил
+    :param corpus_name: имя корпуса который используется для построения словаря
+    :param corpus_class_name: имя класса корпуса который используется для извлечения пар, в случае, если их нет
+    :return: -
+    '''
+
+    processor = lemma_wordform_processor_class_name()
+
+    if not config[corpus_name]['pairs'].exists():
+        corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['trees'], processor,
+                                   config[corpus_name]['corpus'])
+        corpus.extract_lemma_wordform_pairs_not_unique()
+
+    if not config[corpus_name]['trees'].exists():
+        corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['trees'], processor,
+                                   config[corpus_name]['corpus'])
+        corpus.build_rules()
+        corpus.save_rules_set()
+
+    if not config[corpus_name]['dict'].exists():
+        visualization_processor = VisualizationProcessor(processor, config[corpus_name]['trees'],
+                                                         config[corpus_name]['pairs'], config[corpus_name]['dict'])
+        visualization_processor.build_dictionary()
 
 def calculate_K(file1, file2):
     '''
@@ -27,8 +58,6 @@ def calculate_K(file1, file2):
     K = (-1 / N + sum_x)
     return K
 
-
-
 def estimate_slope(file_path):
     """
     Оценивает наклон прямой методом наименьших квадратов для первых 50 классов
@@ -48,6 +77,25 @@ def estimate_slope(file_path):
 
     return slope
 
+
+def make_dict_of_measures_for_corpus(lemma_wordform_processor_class_name, corpus_name, corpus_class_name):
+    '''
+    Функция создает частотный словарь для разных словарей и корпусов
+    :param lemma_wordform_processor_class_name: Имя процессора построения леммы в зависимости от типа правил
+    :param corpus_name: имя корпуса который используется для построения словаря
+    :param corpus_class_name: имя класса корпуса который используется для извлечения пар, в случае, если их нет
+    :return: -
+    '''
+
+    build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, corpus_class_name)
+    K = calculate_K(config[corpus_name]['dict'], config[corpus_name]['trees'])
+    slope_50 = estimate_slope(config[corpus_name]['dict'])
+
+    return {corpus_name : {"Для процессора": lemma_wordform_processor_class_name , "K" : K, "Slope50class": slope_50}}
+
+
+print(make_dict_of_measures_for_corpus(LemmaWordformProcessorTree, 'taiga', UniversalDependenciesCorpus))
+'''
 # Создание словаря с результатами
 corpora_dict = {}
 
@@ -59,7 +107,7 @@ corpora_files = {
     'gsd': (config['gsd']['dict'], config['gsd']['trees']),
     'pud': (config['pud']['dict'], config['pud']['trees']),
     'OpenCorpora': (config['OpenCorpora']['dict'], config['OpenCorpora']['tree']),
-    'SynTagRus_original' : (config['SynTagRus_original]['dict'], config['SynTagRus_original]['trees']),
+    'SynTagRus_original' : (config['SynTagRus_original']['dict'], config['SynTagRus_original']['trees']),
     'RNC' : (config['RNC']['dict'], config['RNC']['trees'])
 }
 
@@ -73,3 +121,4 @@ print(corpora_dict)
 df = pd.DataFrame(corpora_dict).transpose()
 
 print(df)
+'''

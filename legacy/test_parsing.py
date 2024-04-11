@@ -3,7 +3,7 @@
 import plotly.express as px
 
 import pickle
-from LemmaWordformProcessor_class import LemmaWordformProcessor
+from lemma_wordform_processor import LemmaWordformProcessor
 from collections import defaultdict
 #~~~~~~~~~~~~~~~~~~~~~~~~~~СОБЕРЕМ f_Xы ДЛЯ ЮНИМОРФА~~~~~~~~~~~~~~
 # Загрузка данных из файлов

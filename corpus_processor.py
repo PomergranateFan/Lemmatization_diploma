@@ -1,9 +1,9 @@
 import pickle
 import xml.etree.ElementTree as ET
-from LemmaWordformProcessorSES_class import LemmaWordformProcessorSES
-from LemmaWordformProcessor_class import LemmaWordformProcessor
+from lemma_wordform_processor import LemmaWordformProcessor
 from conllu import parse
 import os
+
 
 class BaseDictionaryCorpus:
     def __init__(self, input_file, output_file, lemma_wordform_processor_class_name, data_path = None):
@@ -41,7 +41,7 @@ class BaseDictionaryCorpus:
 
         file.close()
 
-    def save_rule_set(self):
+    def save_rules_set(self):
         """
         Метод для сохранения деревьев в файл.
 
@@ -54,7 +54,7 @@ class BaseDictionaryCorpus:
             pickle.dump(self.rules_set, file)
 
 
-    def extract_lemma_wordform_pairs(self):
+    def extract_lemma_wordform_pairs_not_unique(self):
         """
         Метод для извлечения пар лемма-словоформа из исходного словаря.
 
@@ -78,7 +78,7 @@ class OpenCorpora(BaseDictionaryCorpus):
         """
         super().__init__(data_path, input_file, output_file)
 
-    def extract_lemma_wordform_pairs(self):
+    def extract_lemma_wordform_pairs_not_unique(self):
         """
         Метод для извлечения пар лемма-словоформа из исходного XML-файла OpenCorpora.
 
@@ -139,7 +139,7 @@ class OpenCorporaCorpus(BaseDictionaryCorpus):
         """
         super().__init__(data_path, input_file, output_file)
 
-    def extract_lemma_wordform_pairs(self):
+    def extract_lemma_wordform_pairs_not_unique(self):
         """
         Метод для извлечения пар лемма-словоформа из исходного XML-файла annot.opcorpora.xml
 
@@ -211,7 +211,7 @@ class Unimorph(BaseDictionaryCorpus):
         """
         super().__init__(data_path, input_file, output_file)
 
-    def extract_lemma_wordform_pairs(self):
+    def extract_lemma_wordform_pairs_not_unique(self):
         """
         Метод для извлечения пар лемма-словоформа из исходного txt-файла словаря unimorph.
 
@@ -281,7 +281,7 @@ class Unimorph(BaseDictionaryCorpus):
         print("Extracted and saved not unique lemma-wordform pairs.")
 
 
-class SynTagRusCorpus(BaseDictionaryCorpus):
+class UniversalDependenciesCorpus(BaseDictionaryCorpus):
     def __init__(self, data_path, input_file, output_file):
         """
         Инициализация класса OpenCorporaCorpus для работы с данными корпуса SynTagRus.
@@ -293,7 +293,7 @@ class SynTagRusCorpus(BaseDictionaryCorpus):
         """
         super().__init__(data_path, input_file, output_file)
 
-    def extract_lemma_wordform_pairs(self):
+    def extract_lemma_wordform_pairs_not_unique(self):
         """
         Метод для извлечения пар лемма-словоформа из исходного conllu-файла
 
