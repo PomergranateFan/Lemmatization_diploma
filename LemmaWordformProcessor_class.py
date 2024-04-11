@@ -8,7 +8,7 @@ class LemmaWordformProcessor:
         Конструктор класса LemmaWordformProcessor.
         """
         pass
-    def build(self, x, y):
+    def build_rule(self, x, y):
         """
         Метод для построения дерева на основе леммы и словоформы.
 
@@ -22,7 +22,7 @@ class LemmaWordformProcessor:
 
         raise NotImplementedError("Метод должен быть реализован в подклассе!")
 
-    def apply(self, tree, x):
+    def apply_rule(self, tree, x):
         """
         Метод для применения дерева правил к словоформе и получения леммы.
 
@@ -74,7 +74,7 @@ class LemmaWordformProcessorTree(LemmaWordformProcessor):
 
         return start_index_x, end_index_x, start_index_y, end_index_y
 
-    def build(self, x, y):
+    def build_rule(self, x, y):
         """
         Метод для построения дерева на основе леммы и словоформы.
 
@@ -95,7 +95,7 @@ class LemmaWordformProcessorTree(LemmaWordformProcessor):
             right_tree = self.build(x[i_e:], y[j_e:])
             return left_tree, i_s, right_tree, len(x) - i_e
 
-    def apply(self, tree, x):
+    def apply_rule(self, tree, x):
         """
         Метод для применения дерева правил к словоформе и получения леммы.
 
@@ -145,7 +145,7 @@ class LemmaWordformProcessorSES(LemmaWordformProcessor):
         super().__init__()
         pass
 
-    def build(self, str_a, str_b):
+    def build_rule(self, str_a, str_b):
         """
         Находит последовательность редактирования (SES) между двумя строками.
 
@@ -190,7 +190,7 @@ class LemmaWordformProcessorSES(LemmaWordformProcessor):
 
         return tuple(ses)
 
-    def build(self, ses, word):
+    def apply_rule(self, ses, word):
         """
         Применяет операции SES к данному слову.
 
