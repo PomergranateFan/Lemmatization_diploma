@@ -115,11 +115,11 @@ class LemmaWordformProcessorTree(LemmaWordformProcessor):
                 if len(x) < i_l + j_l:
                     return None
 
-                p = self.apply(tree_i, x[:i_l])  # Создаем префикс
+                p = self.apply_rule(tree_i, x[:i_l])  # Создаем префикс
                 if p is None:
                     return None
 
-                s = self.apply(tree_j, x[-j_l:])  # Создаем суффикс
+                s = self.apply_rule(tree_j, x[-j_l:])  # Создаем суффикс
                 if s is None:
                     return None
 

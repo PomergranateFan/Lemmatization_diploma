@@ -67,7 +67,7 @@ class BaseDictionaryCorpus:
 
 
 class OpenCorpora(BaseDictionaryCorpus):
-    def __init__(self, data_path, input_file, output_file):
+    def __init__(self, input_file, output_file, lemma_wordform_processor_class_name, data_path):
         """
         Инициализация класса OpenCorpora для работы с данными OpenCorpora.
 
@@ -76,7 +76,7 @@ class OpenCorpora(BaseDictionaryCorpus):
             input_file (str): Путь к файлу, в котором будут сохранены пары лемма-словоформа.
             output_file (str): Путь к файлу, в котором будут сохранены деревья.
         """
-        super().__init__(data_path, input_file, output_file)
+        super().__init__(input_file, output_file, lemma_wordform_processor_class_name, data_path)
 
     def extract_lemma_wordform_pairs_not_unique(self):
         """
@@ -128,7 +128,7 @@ class OpenCorpora(BaseDictionaryCorpus):
 
 
 class OpenCorporaCorpus(BaseDictionaryCorpus):
-    def __init__(self, data_path, input_file, output_file):
+    def __init__(self, input_file, output_file, lemma_wordform_processor_class_name, data_path):
         """
         Инициализация класса OpenCorporaCorpus для работы с данными корпуса OpenCorpora.
 
@@ -137,7 +137,7 @@ class OpenCorporaCorpus(BaseDictionaryCorpus):
             input_file (str): Путь к файлу, в котором будут сохранены пары лемма-словоформа.
             output_file (str): Путь к файлу, в котором будут сохранены деревья.
         """
-        super().__init__(data_path, input_file, output_file)
+        super().__init__(input_file, output_file, lemma_wordform_processor_class_name, data_path)
 
     def extract_lemma_wordform_pairs_not_unique(self):
         """
@@ -282,7 +282,7 @@ class Unimorph(BaseDictionaryCorpus):
 
 
 class UniversalDependenciesCorpus(BaseDictionaryCorpus):
-    def __init__(self, data_path, input_file, output_file):
+    def __init__(self, input_file, output_file, lemma_wordform_processor_class_name, data_path):
         """
         Инициализация класса OpenCorporaCorpus для работы с данными корпуса SynTagRus.
 

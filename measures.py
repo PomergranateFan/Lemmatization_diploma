@@ -4,8 +4,9 @@ import pandas as pd
 from config import config
 from corpus_processor import UniversalDependenciesCorpus
 from lemma_wordform_processor import LemmaWordformProcessorTree
-from Visualization_class import VisualizationProcessor
-
+from visualization_class import VisualizationProcessor
+from corpus_processor import BaseDictionaryCorpus
+from corpus_processor import OpenCorporaCorpus
 
 def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, corpus_class_name):
     '''
@@ -34,22 +35,21 @@ def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, 
                                                          config[corpus_name]['pairs'], config[corpus_name]['dict'])
         visualization_processor.build_dictionary()
 
-def calculate_K(file1, file2):
+def calculate_K(file1):
     '''
     Считает коэффициент k
     :param file1: файл, содержащий частотную информацию о правилах
-    :param file2: файл с множеством правил
     :return: Yule's K - инвариантный отностительно размера коэффициент
     '''
 
     with open(file1, 'rb') as f:
         f_x_data = pickle.load(f)
 
-    with open(file2, 'rb') as f:
-        tree_set = pickle.load(f)
-
     sum_x = 0
-    N = len(tree_set)
+    N = 0
+    for x, info in f_x_data.items():
+        f_x = info['f_x']
+        N += x*f_x
 
     for x, info in f_x_data.items():
         f_x = info['f_x']
@@ -88,13 +88,22 @@ def make_dict_of_measures_for_corpus(lemma_wordform_processor_class_name, corpus
     '''
 
     build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, corpus_class_name)
-    K = calculate_K(config[corpus_name]['dict'], config[corpus_name]['trees'])
+    K = calculate_K(config[corpus_name]['dict'])
     slope_50 = estimate_slope(config[corpus_name]['dict'])
 
-    return {corpus_name : {"Для процессора": lemma_wordform_processor_class_name , "K" : K, "Slope50class": slope_50}}
+    return {corpus_name : {"Для алгоритма": lemma_wordform_processor_class_name , "K" : K, "Slope50class": slope_50}}
 
 
-print(make_dict_of_measures_for_corpus(LemmaWordformProcessorTree, 'taiga', UniversalDependenciesCorpus))
+# print(make_dict_of_measures_for_corpus(LemmaWordformProcessorTree, 'RNC', BaseDictionaryCorpus))
+
+def calculate_measures_for_all_corpuses(list_of_tuples_name_of_corpus_and_class, lemma_wordform_processor_class_name):
+    for items in list_of_tuples_name_of_corpus_and_class:
+        print(make_dict_of_measures_for_corpus(lemma_wordform_processor_class_name, items[0], items[1]))
+
+
+corpuses_and_classes = [('SynTagRus', UniversalDependenciesCorpus), ('poetry', UniversalDependenciesCorpus), ('taiga', UniversalDependenciesCorpus), ('gsd', UniversalDependenciesCorpus), ('pud', UniversalDependenciesCorpus), ('OpenCorpora', OpenCorporaCorpus), ('SynTagRus_original',BaseDictionaryCorpus), ('RNC',BaseDictionaryCorpus)]
+
+calculate_measures_for_all_corpuses(corpuses_and_classes, LemmaWordformProcessorTree)
 '''
 # Создание словаря с результатами
 corpora_dict = {}
