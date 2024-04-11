@@ -27,11 +27,11 @@ config = {
                             "pairs": Path("data/OpenCorpora/pairs_OpenCorpora_corpus_not_unique.pkl"),
                             "trees": Path("data/OpenCorpora/tree_set_OpenCorpora_corpus.pkl"),
                             "dict": Path("data/OpenCorpora/OpenCorpora_f_x_dict.pkl")},
-    'SynTagRus_original': {"corpus": None,
+    'SynTagRus_original':  {"corpus": None,
                             "pairs": Path("data/SynTagRus_original/pairs_SynTagRus_original_corpus_not_unique.pkl"),
                             "trees": Path("data/SynTagRus_original/tree_set_SynTagRus_original_corpus.pkl"),
                             "dict": Path("data/SynTagRus_original/syntagrus_original_f_x_dict.pkl")},
-    'RNC':                {"corpus": None,
+    'RNC':                 {"corpus": None,
                             "pairs": Path("data/RNC/pairs_RNC_main_corpus_not_unique.pkl"),
                             "trees": Path("data/RNC/tree_set_RNC_main_corpus.pkl"),
                             "dict": Path("data/RNC/RNC_main_f_x_dict.pkl")}

@@ -421,7 +421,7 @@ class SynTagRusCorpus(BaseDictionaryCorpus):
 # unimorph.build_trees()
 # unimorph.save_tree_set()
 
-# opencorporacorpus = OpenCorporaCorpus("annot.opcorpora.xml", "pairs_OpenCorpora_corpus_not_unique.pkl", "tree_set_OpenCorpora_corpus.pkl")
+# opencorporacorpus = OpenCorporaCorpus("annot.opcorpora.xml", config['OpenCorpora']['corpus'], config['OpenCorpora']['tree'])
 # opencorporacorpus.extract_lemma_wordform_pairs_not_unique()
 # opencorporacorpus.build_trees()
 # opencorporacorpus.save_tree_set()
@@ -431,7 +431,7 @@ class SynTagRusCorpus(BaseDictionaryCorpus):
 # unimorph.build_ses()
 # unimorph.save_ses_set()
 
-# syntagrus = SynTagRusCorpus("syntagrus", "pairs_SynTagRus_corpus_not_unique.pkl ", "tree_set_SynTagRus_corpus.pkl")
+# syntagrus = SynTagRusCorpus(config['SynTagRus']['corpus'], "pairs_SynTagRus_corpus_not_unique.pkl ", config['SynTagRus']['trees'])
 # syntagrus.extract_lemma_wordform_pairs_not_unique()
 # syntagrus.build_trees()
 # syntagrus.save_tree_set()

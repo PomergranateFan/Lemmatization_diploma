@@ -20,10 +20,10 @@ def ddict2dict(d):
 
 
 # Загрузка данных из файлов
-with open('tree_set_SynTagRus_corpus.pkl', 'rb') as f:
+with open(config['SynTagRus']['trees'], 'rb') as f:
     tree_set = pickle.load(f)
 
-with open('pairs_SynTagRus_corpus_not_unique.pkl', 'rb') as f:
+with open(config['SynTagRus']['pairs'], 'rb') as f:
     pairs = pickle.load(f)
 
 # Заводим процессор как экземпляр класса

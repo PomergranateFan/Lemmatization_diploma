@@ -53,14 +53,14 @@ corpora_dict = {}
 
 
 corpora_files = {
-    'SynTagRus': ('syntagrus_f_x_dict.pkl', 'tree_set_SynTagRus_corpus.pkl'),
-    'poetry': ('poetry_f_x_dict.pkl', 'tree_set_poetry_corpus.pkl'),
-    'taiga': ('taiga_f_x_dict.pkl', 'tree_set_taiga_corpus.pkl'),
-    'gsd': ('gsd_f_x_dict.pkl', 'tree_set_gsd_corpus.pkl'),
-    'pud': ('pud_f_x_dict.pkl', 'tree_set_pud_corpus.pkl'),
-    'OpenCorpora': ('OpenCorpora_f_x_dict.pkl', 'tree_set_OpenCorpora_corpus.pkl'),
-    'SynTagRus_original' : ("syntagrus_original_f_x_dict.pkl", 'tree_set_SynTagRus_original_corpus.pkl'),
-    'RNC' : ('RNC_main_f_x_dict.pkl', 'tree_set_RNC_main_corpus.pkl')
+    'SynTagRus': (config['SynTagRus']['dict'], config['SynTagRus']['trees']),
+    'poetry': (config['poetry']['dict'], config['poetry']['trees']),
+    'taiga': (config['taiga']['dict'], config['taiga']['trees']),
+    'gsd': (config['gsd']['dict'], config['gsd']['trees']),
+    'pud': (config['pud']['dict'], config['pud']['trees']),
+    'OpenCorpora': (config['OpenCorpora']['dict'], config['OpenCorpora']['tree']),
+    'SynTagRus_original' : (config['SynTagRus_original]['dict'], config['SynTagRus_original]['trees']),
+    'RNC' : (config['RNC']['dict'], config['RNC']['trees'])
 }
 
 for corpus, files in corpora_files.items():

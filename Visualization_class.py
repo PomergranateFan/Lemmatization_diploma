@@ -104,8 +104,8 @@ class VisualizationProcessor:
 
 # Пример использования:
 # processor = LemmaWordformProcessor()
-# visualization_processor = VisualizationProcessor(processor, 'tree_set_SynTagRus_corpus.pkl',
-#                                                  'pairs_SynTagRus_corpus_not_unique.pkl', 'str_f_x_correct_all.pkl')
+# visualization_processor = VisualizationProcessor(processor, config['SynTagRus']['trees'],
+#                                                  config['SynTagRus']['pairs'], 'str_f_x_correct_all.pkl')
 
 # visualization_processor.build_dictionary()
 # visualization_processor.visualize()

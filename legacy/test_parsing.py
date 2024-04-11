@@ -209,10 +209,10 @@ with open(output_file_path, 'wb') as output_file:
 
 
 # Загрузка данных из файлов
-with open('tree_set_OpenCorpora_corpus.pkl', 'rb') as f:
+with open(config['OpenCorpora']['tree'], 'rb') as f:
     tree_set = pickle.load(f)
 
-with open('pairs_OpenCorpora_corpus_not_unique.pkl', 'rb') as f:
+with open(config['OpenCorpora']['corpus'], 'rb') as f:
     pairs = pickle.load(f)
 
 # Заводим процессор как элемент класса
@@ -239,10 +239,10 @@ with open(output_file_path, 'wb') as output_file:
     pickle.dump(f_x_potential_corpora_corpus, output_file)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-with open('tree_set_OpenCorpora_corpus.pkl', 'rb') as f:
+with open(config['OpenCorpora']['tree'], 'rb') as f:
     tree_set = pickle.load(f)
 
-with open('pairs_OpenCorpora_corpus_not_unique.pkl', 'rb') as f:
+with open(config['OpenCorpora']['corpus'], 'rb') as f:
     pairs = pickle.load(f)
 
 # Заводим процессор как экземпляр класса
@@ -271,10 +271,10 @@ with open(output_file_path, 'wb') as output_file:
     pickle.dump(f_x_lemmas_corpora_corpus, output_file)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Загрузка данных из файлов
-with open('tree_set_OpenCorpora_corpus.pkl', 'rb') as f:
+with open(config['OpenCorpora']['tree'], 'rb') as f:
     tree_set = pickle.load(f)
 
-with open('pairs_OpenCorpora_corpus_not_unique.pkl', 'rb') as f:
+with open(config['OpenCorpora']['corpus'], 'rb') as f:
     pairs = pickle.load(f)
 
 # Заводим процессор как экземпляр класса
@@ -311,10 +311,10 @@ with open(output_file_path, 'wb') as output_file:
 
 
 # Загрузка данных из файлов
-with open('tree_set_SynTagRus_corpus.pkl', 'rb') as f:
+with open(config['SynTagRus']['trees'], 'rb') as f:
     tree_set = pickle.load(f)
 
-with open('pairs_SynTagRus_corpus_not_unique.pkl', 'rb') as f:
+with open(config['SynTagRus']['pairs'], 'rb') as f:
     pairs = pickle.load(f)
 
 # Заводим процессор как элемент класса
@@ -341,10 +341,10 @@ with open(output_file_path, 'wb') as output_file:
     pickle.dump(f_x_potential_str, output_file)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-with open('tree_set_SynTagRus_corpus.pkl', 'rb') as f:
+with open(config['SynTagRus']['trees'], 'rb') as f:
     tree_set = pickle.load(f)
 
-with open('pairs_SynTagRus_corpus_not_unique.pkl', 'rb') as f:
+with open(config['SynTagRus']['pairs'], 'rb') as f:
     pairs = pickle.load(f)
 
 # Заводим процессор как экземпляр класса
@@ -374,10 +374,10 @@ with open(output_file_path, 'wb') as output_file:
     pickle.dump(f_x_lemmas_str, output_file)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Загрузка данных из файлов
-with open('tree_set_SynTagRus_corpus.pkl', 'rb') as f:
+with open(config['SynTagRus']['trees'], 'rb') as f:
     tree_set = pickle.load(f)
 
-with open('pairs_SynTagRus_corpus_not_unique.pkl', 'rb') as f:
+with open(config['SynTagRus']['pairs'], 'rb') as f:
     pairs = pickle.load(f)
 
 # Заводим процессор как экземпляр класса

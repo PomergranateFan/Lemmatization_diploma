@@ -1,10 +1,10 @@
 import pickle
 import numpy as np
 
-with open("syntagrus_f_x_dict.pkl", "rb") as f:
+with open(config['SynTagRus']['dict'], "rb") as f:
         f_x_data = pickle.load(f)
 
-with open("tree_set_SynTagRus_corpus.pkl", 'rb') as f:
+with open(config['SynTagRus']['trees'], 'rb') as f:
     tree_set = pickle.load(f)
 
 sum_x = 0
