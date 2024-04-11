@@ -5,10 +5,8 @@ from LemmaWordformProcessor_class import LemmaWordformProcessor
 from conllu import parse
 import os
 
-
-
 class BaseDictionaryCorpus:
-    def __init__(self, input_file, output_file, data_path = None):
+    def __init__(self, input_file, output_file, lemma_wordform_processor_class_name, data_path = None):
         """
         Инициализация базового класса для работы с словарями и корпусами.
 
@@ -16,16 +14,15 @@ class BaseDictionaryCorpus:
             data_path (str): Путь к исходным данным (например, XML-файл словаря или корпуса).
             input_file (str): Путь к файлу, в котором будут сохранены пары лемма-словоформа.
             output_file (str): Путь к файлу, в котором будут сохранены деревья.
+            lemma_wordform_processor_class_name (str): Имя класса лемма-вордформ_процессора
         """
         self.data_path = data_path
         self.input_file = input_file
         self.output_file = output_file
-        self.tree_set = set()
-        self.ses_set = set()
-        self.processor = LemmaWordformProcessor()
-        self.processor_ses = LemmaWordformProcessorSES()
+        self.rules_set = set()
+        self.processor = lemma_wordform_processor_class_name()
 
-    def build_trees(self):
+    def build_rules(self):
         """
         Метод для построения деревьев на основе пар лемма-словоформа.
 
@@ -39,31 +36,12 @@ class BaseDictionaryCorpus:
 
         for pair in data:
             lemma, wordform = pair
-            tree = self.processor.build_tree(wordform.lower(), lemma.lower())  # Convert to lowercase
-            self.tree_set.add(tree)
+            tree = self.processor.build_rule(wordform.lower(), lemma.lower())  # Convert to lowercase
+            self.rules_set.add(tree)
 
         file.close()
 
-    def build_ses(self):
-        """
-        Метод для построения правил SES на основе пар лемма-словоформа.
-
-        Проходит через пары лемма-словоформа и строит деревья с помощью LemmaWordformProcessorSES.
-
-        Returns:
-            None
-        """
-        with open(self.input_file, 'rb') as file:
-            data = pickle.load(file)
-
-        for pair in data:
-            lemma, wordform = pair
-            ses = self.processor_ses.find_ses(wordform.lower(), lemma.lower())  # Convert to lowercase
-            self.ses_set.add(ses)
-
-        file.close()
-
-    def save_tree_set(self):
+    def save_rule_set(self):
         """
         Метод для сохранения деревьев в файл.
 
@@ -73,19 +51,7 @@ class BaseDictionaryCorpus:
             None
         """
         with open(self.output_file, 'wb') as file:
-            pickle.dump(self.tree_set, file)
-
-    def save_ses_set(self):
-        """
-        Метод для сохранения правил SES в файл.
-
-        Сохраняет построенные SES в файл в формате pickle.
-
-        Returns:
-            None
-        """
-        with open(self.output_file, 'wb') as file:
-            pickle.dump(self.ses_set, file)
+            pickle.dump(self.rules_set, file)
 
 
     def extract_lemma_wordform_pairs(self):
