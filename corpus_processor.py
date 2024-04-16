@@ -293,7 +293,7 @@ class UniversalDependenciesCorpus(BaseDictionaryCorpus):
         """
         super().__init__(data_path, input_file, output_file)
 
-    def extract_lemma_wordform_pairs_not_unique(self):
+    def extract_lemma_wordform_pairs_unique(self):
         """
         Метод для извлечения пар лемма-словоформа из исходного conllu-файла
 
