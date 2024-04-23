@@ -1,5 +1,8 @@
 from suffix_trees import STree
 import numpy as np
+from typing import List, Tuple
+import re
+
 
 
 class LemmaWordformProcessor:
@@ -22,7 +25,7 @@ class LemmaWordformProcessor:
 
         raise NotImplementedError("Метод должен быть реализован в подклассе!")
 
-    def apply_rule(self, tree, x):
+    def apply_rule(self, rule, x):
         """
         Метод для применения дерева правил к словоформе и получения леммы.
 
@@ -34,10 +37,6 @@ class LemmaWordformProcessor:
             str: Лемма.
         """
         raise NotImplementedError("Метод должен быть реализован в подклассе!")
-
-
-
-
 
 
 class LemmaWordformProcessorTree(LemmaWordformProcessor):
@@ -91,8 +90,8 @@ class LemmaWordformProcessorTree(LemmaWordformProcessor):
             return x, y
         else:
             i_s, i_e, j_s, j_e = lcs_result
-            left_tree = self.build(x[:i_s], y[:j_s])
-            right_tree = self.build(x[i_e:], y[j_e:])
+            left_tree = self.build_rule(x[:i_s], y[:j_s])
+            right_tree = self.build_rule(x[i_e:], y[j_e:])
             return left_tree, i_s, right_tree, len(x) - i_e
 
     def apply_rule(self, tree, x):
@@ -116,10 +115,12 @@ class LemmaWordformProcessorTree(LemmaWordformProcessor):
                     return None
 
                 p = self.apply_rule(tree_i, x[:i_l])  # Создаем префикс
+
                 if p is None:
                     return None
 
-                s = self.apply_rule(tree_j, x[-j_l:])  # Создаем суффикс
+                s = self.apply_rule(tree_j, x[len(x)-j_l:])  # Создаем суффикс
+
                 if s is None:
                     return None
 
@@ -131,9 +132,6 @@ class LemmaWordformProcessorTree(LemmaWordformProcessor):
                     return v
                 else:
                     return None
-
-
-
 
 class LemmaWordformProcessorSES(LemmaWordformProcessor):
     def __init__(self):
@@ -182,54 +180,177 @@ class LemmaWordformProcessorSES(LemmaWordformProcessor):
                 ses.append(('D', reversed_a[i - 1], len(reversed_a) - i))
                 i -= 1
             elif j > 0 and dp[i][j] == dp[i][j - 1] + 1:
-                ses.append(('I', reversed_b[j - 1], len(reversed_b) - j + 1))
+                ses.append(('I', reversed_b[j - 1], len(reversed_a) - i))
                 j -= 1
             else:
                 i -= 1
                 j -= 1
 
         return tuple(ses)
+    def apply_rule(self, rule, x):
+        word = list(x)
+        # init_len = len(word)
+        pos_dict = {}
 
-    def apply_rule(self, ses, word):
+        for i in range(len(word) + 2):
+            pos_dict.update({i: i})
+
+        for item in rule[::-1]:
+            idx = pos_dict[item[2]]
+
+            if item[0] == 'D':
+                word[idx] = ' '
+            elif item[0] == 'I':
+                word.insert(idx, item[1])
+                if item[2] < len(pos_dict):
+                    for i in range(item[2] + 1, len(pos_dict)):
+                        pos_dict.update({i: pos_dict[i] + 1})
+                    pos_dict.update({len(pos_dict): pos_dict[len(pos_dict) - 1] + 1})
+
+        word = "".join(word)
+
+
+        return word.replace(' ', '')
+
+
+class LemmaWordformProcessorUD(LemmaWordformProcessor):
+    def __init__(self, allow_copy):
         """
-        Применяет операции SES к данному слову.
-
-        :param ses: Список операций SES
-        :param word: Исходная словоформа
-        :return: Модифицированное слово после применения операций SES
+        Конструктор класса LemmaWordformProcessorUD.
         """
-        # Заводим копию слова
-        word_copy = word
+        super().__init__()
+        self.allow_copy = allow_copy
+        pass
 
-        # Создаем массив, хранящий позицию каждой буквы исходного слова в новом слове
-        position_list = np.arange(len(word))
+    def _min_edit_script(self, source, target, allow_copy):
+        """
+        Вычисляет минимальный скрипт редактирования для преобразования одной строки в другую.
 
-        for item in ses:
-            if item[1] in word and len(word) + 1 > item[2]:
-                index = position_list[item[2]]
+        Параметры:
+        - source: строка, исходная строка
+        - target: строка, целевая строка
+        - allow_copy: булево значение, разрешить ли копирование символов
 
-                if item[0] == "D":
-                    # Если встречаем операцию удалить, то индексы позиций после удаленной буквы
-                    # уменьшаются на 1
-                    my_array = np.zeros(len(word), dtype=position_list.dtype)
-                    my_array[item[2] + 1:] = -1
+        Возвращает строку, представляющую минимальный скрипт редактирования.
+        """
+        a = [[(len(source) + len(target) + 1, None)] * (len(target) + 1) for _ in range(len(source) + 1)]
+        for i in range(0, len(source) + 1):
+            for j in range(0, len(target) + 1):
+                if i == 0 and j == 0:
+                    a[i][j] = (0, "")
+                else:
+                    if allow_copy and i and j and source[i - 1] == target[j - 1] and a[i-1][j-1][0] < a[i][j][0]:
+                        a[i][j] = (a[i-1][j-1][0], a[i-1][j-1][1] + "→")
+                    if i and a[i-1][j][0] < a[i][j][0]:
+                        a[i][j] = (a[i-1][j][0] + 1, a[i-1][j][1] + "-")
+                    if j and a[i][j-1][0] < a[i][j][0]:
+                        a[i][j] = (a[i][j-1][0] + 1, a[i][j-1][1] + "+" + target[j - 1])
+        return a[-1][-1][1]
 
-                    position_list += my_array
-                    word_copy = word_copy[:index] + word_copy[index + 1:]
+    def build_rule(self, form, lemma):
+        """
+        Генерирует правило лемматизации для заданной словоформы и ее леммы.
 
-                elif item[0] == "I":
-                    # Если встречаем операцию вставить, то индексы позиций после вставленной буквы
-                    # увеличиваются на 1
+        Параметры:
+        - form: строка, представляющая словоформу
+        - lemma: строка, представляющая лемму
+        - allow_copy: булево значение, разрешить ли копирование символов
 
-                    my_array = np.zeros(len(word), dtype=position_list.dtype)
-                    my_array[item[2] + 1:] = 1
-                    position_list += my_array
-                    word_copy = word_copy[:index] + item[1] + word_copy[index:]
+        Возвращает строку, представляющую правило лемматизации.
+        """
+        form = form.lower()
 
-            else:
-                return None
+        previous_case = -1
+        lemma_casing = ""
+        for i, c in enumerate(lemma):
+            case = "↑" if c.lower() != c else "↓"
+            if case != previous_case:
+                lemma_casing += "{}{}{}".format("¦" if lemma_casing else "", case, i if i <= len(lemma) // 2 else i - len(lemma))
+            previous_case = case
+        lemma = lemma.lower()
 
-        return word_copy
+        best, best_form, best_lemma = 0, 0, 0
+        for l in range(len(lemma)):
+            for f in range(len(form)):
+                cpl = 0
+                while f + cpl < len(form) and l + cpl < len(lemma) and form[f + cpl] == lemma[l + cpl]: cpl += 1
+                if cpl > best:
+                    best = cpl
+                    best_form = f
+                    best_lemma = l
+
+        rule = lemma_casing + ";"
+        if not best:
+            rule += "a" + lemma
+        else:
+            rule += "d{}¦{}".format(
+                self._min_edit_script(form[:best_form], lemma[:best_lemma], self.allow_copy),
+                self._min_edit_script(form[best_form + best:], lemma[best_lemma + best:], self.allow_copy),
+            )
+        return rule
+
+    def apply_rule(self, lemma_rule, form):
+        """
+        Применяет правило лемматизации к словоформе.
+
+        Параметры:
+        - form: строка, представляющая словоформу
+        - lemma_rule: строка, представляющая правило лемматизации
+
+        Возвращает лемматическую форму слова.
+        """
+        if ';' not in lemma_rule:
+            raise ValueError('lemma_rule %r for form %r missing semicolon' %(lemma_rule, form))
+        casing, rule = lemma_rule.split(";", 1)
+        if rule.startswith("a"):
+            lemma = rule[1:]
+        else:
+            form = form.lower()
+            rules, rule_sources = rule[1:].split("¦"), []
+            assert len(rules) == 2
+            for rule in rules:
+                source, i = 0, 0
+                while i < len(rule):
+                    if rule[i] == "→" or rule[i] == "-":
+                        source += 1
+                    else:
+                        assert rule[i] == "+"
+                        i += 1
+                    i += 1
+                rule_sources.append(source)
+
+            try:
+                lemma, form_offset = "", 0
+                for i in range(2):
+                    j, offset = 0, (0 if i == 0 else len(form) - rule_sources[1])
+                    while j < len(rules[i]):
+                        if rules[i][j] == "→":
+                            lemma += form[offset]
+                            offset += 1
+                        elif rules[i][j] == "-":
+                            offset += 1
+                        else:
+                            assert(rules[i][j] == "+")
+                            lemma += rules[i][j + 1]
+                            j += 1
+                        j += 1
+                    if i == 0:
+                        lemma += form[rule_sources[0] : len(form) - rule_sources[1]]
+            except:
+                lemma = form
+
+        for rule in casing.split("¦"):
+            if rule == "↓0": continue # The lemma is lowercased initially
+            if not rule: continue # Empty lemma might generate empty casing rule
+            case, offset = rule[0], int(rule[1:])
+            lemma = lemma[:offset] + (lemma[offset:].upper() if case == "↑" else lemma[offset:].lower())
+
+        return lemma
+
+
+
+
+
 
 
 '''
