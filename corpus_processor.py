@@ -36,8 +36,8 @@ class BaseDictionaryCorpus:
 
         for pair in data:
             lemma, wordform = pair
-            tree = self.processor.build_rule(wordform.lower(), lemma.lower())  # Convert to lowercase
-            self.rules_set.add(tree)
+            rule = self.processor.build_rule(wordform.lower(), lemma.lower())  # Convert to lowercase
+            self.rules_set.add(rule)
 
         file.close()
 
@@ -291,7 +291,7 @@ class UniversalDependenciesCorpus(BaseDictionaryCorpus):
             input_file (str): Путь к файлу, в котором будут сохранены пары лемма-словоформа.
             output_file (str): Путь к файлу, в котором будут сохранены деревья.
         """
-        super().__init__(data_path, input_file, output_file)
+        super().__init__(input_file, output_file, lemma_wordform_processor_class_name, data_path)
 
     def extract_lemma_wordform_pairs_unique(self):
         """

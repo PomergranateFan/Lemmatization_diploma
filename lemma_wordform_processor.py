@@ -213,7 +213,7 @@ class LemmaWordformProcessorSES(LemmaWordformProcessor):
         return word.replace(' ', '')
 
 
-class LemmaWordformProcessorUD_without_copy(LemmaWordformProcessor):
+class LemmaWordformProcessorUDWithoutCopy(LemmaWordformProcessor):
     ALLOW_COPY = 0
     def __init__(self):
         """
@@ -349,10 +349,11 @@ class LemmaWordformProcessorUD_without_copy(LemmaWordformProcessor):
         return lemma
 
 
-class LemmaWordformProcessorUD_with_copy(LemmaWordformProcessor):
+class LemmaWordformProcessorUDWithCopy(LemmaWordformProcessor):
 
     ALLOW_COPY = 1
     def __init__(self):
+
         """
         Конструктор класса LemmaWordformProcessorUD.
         """
