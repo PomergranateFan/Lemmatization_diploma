@@ -78,7 +78,7 @@ class OpenCorpora(BaseDictionaryCorpus):
         """
         super().__init__(input_file, output_file, lemma_wordform_processor_class_name, data_path)
 
-    def extract_lemma_wordform_pairs_not_unique(self):
+    def extract_lemma_wordform_pairs_unique(self):
         """
         Метод для извлечения пар лемма-словоформа из исходного XML-файла OpenCorpora.
 
@@ -139,7 +139,7 @@ class OpenCorporaCorpus(BaseDictionaryCorpus):
         """
         super().__init__(input_file, output_file, lemma_wordform_processor_class_name, data_path)
 
-    def extract_lemma_wordform_pairs_not_unique(self):
+    def extract_lemma_wordform_pairs_unique(self):
         """
         Метод для извлечения пар лемма-словоформа из исходного XML-файла annot.opcorpora.xml
 
@@ -211,7 +211,7 @@ class Unimorph(BaseDictionaryCorpus):
         """
         super().__init__(data_path, input_file, output_file)
 
-    def extract_lemma_wordform_pairs_not_unique(self):
+    def extract_lemma_wordform_pairs_unique(self):
         """
         Метод для извлечения пар лемма-словоформа из исходного txt-файла словаря unimorph.
 
