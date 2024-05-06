@@ -199,7 +199,7 @@ class LemmaWordformProcessorSES(LemmaWordformProcessor):
             idx = pos_dict[item[2]]
 
             if item[0] == 'D':
-                word[idx] = ' '
+                word[idx] = '#'
             elif item[0] == 'I':
                 word.insert(idx, item[1])
                 if item[2] < len(pos_dict):
@@ -210,8 +210,7 @@ class LemmaWordformProcessorSES(LemmaWordformProcessor):
         word = "".join(word)
 
 
-        return word.replace(' ', '')
-
+        return word.replace('#', '')
 
 class LemmaWordformProcessorUDWithoutCopy(LemmaWordformProcessor):
     ALLOW_COPY = 0

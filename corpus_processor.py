@@ -14,7 +14,7 @@ class BaseDictionaryCorpus:
             data_path (str): Путь к исходным данным (например, XML-файл словаря или корпуса).
             input_file (str): Путь к файлу, в котором будут сохранены пары лемма-словоформа.
             output_file (str): Путь к файлу, в котором будут сохранены деревья.
-            lemma_wordform_processor_class_name (str): Имя класса лемма-вордформ_процессора
+            lemma_wordform_processor_class_name (str): Имя класса лемма-вордфоsрм_процессора
         """
         self.data_path = data_path
         self.input_file = input_file

@@ -20,7 +20,7 @@ def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, 
     :return: -
     '''
 
-    processor = lemma_wordform_processor_class_name()
+    processor = lemma_wordform_processor_class_name
 
     if not config[corpus_name]['pairs'].exists():
         corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['trees'], processor,
@@ -38,6 +38,7 @@ def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, 
             visualization_processor = VisualizationProcessor(processor, config[corpus_name]['trees'],
                                                              config[corpus_name]['pairs'], config[corpus_name]['dict_tree'])
             visualization_processor.build_dictionary()
+
 
     if lemma_wordform_processor_class_name == LemmaWordformProcessorSES:
         if not config[corpus_name]['ses'].exists():
@@ -59,10 +60,12 @@ def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, 
             corpus.build_rules()
             corpus.save_rules_set()
 
+
         if not config[corpus_name]['dict_ud_with_copy'].exists():
             visualization_processor = VisualizationProcessor(processor, config[corpus_name]['ud_with_copy'],
                                                              config[corpus_name]['pairs'], config[corpus_name]['dict_ud_with_copy'])
             visualization_processor.build_dictionary()
+
 
 
     if lemma_wordform_processor_class_name == LemmaWordformProcessorUDWithoutCopy:
@@ -76,6 +79,7 @@ def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, 
             visualization_processor = VisualizationProcessor(processor, config[corpus_name]['ud_without_copy'],
                                                              config[corpus_name]['pairs'], config[corpus_name]['dict_ud_without_copy'])
             visualization_processor.build_dictionary()
+
 
 
 
@@ -149,6 +153,10 @@ def calculate_measures_for_all_corpuses(list_of_tuples_name_of_corpus_and_class,
 corpuses_and_classes = [('SynTagRus', UniversalDependenciesCorpus), ('poetry', UniversalDependenciesCorpus), ('taiga', UniversalDependenciesCorpus), ('gsd', UniversalDependenciesCorpus), ('pud', UniversalDependenciesCorpus), ('OpenCorpora', OpenCorporaCorpus), ('SynTagRus_original',BaseDictionaryCorpus), ('RNC',BaseDictionaryCorpus)]
 
 calculate_measures_for_all_corpuses(corpuses_and_classes, LemmaWordformProcessorTree)
+
+
+
+
 '''
 # Создание словаря с результатами
 corpora_dict = {}

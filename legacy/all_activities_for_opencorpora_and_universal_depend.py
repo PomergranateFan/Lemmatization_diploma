@@ -1,129 +1,53 @@
-from lemma_wordform_processor import LemmaWordformProcessor
+from lemma_wordform_processor import LemmaWordformProcessorTree
+from lemma_wordform_processor import LemmaWordformProcessorSES
+from lemma_wordform_processor import LemmaWordformProcessorUDWithCopy
+from lemma_wordform_processor import LemmaWordformProcessorUDWithoutCopy
 from visualization_class import VisualizationProcessor
 from corpus_processor import UniversalDependenciesCorpus
 from corpus_processor import OpenCorporaCorpus
 from corpus_processor import BaseDictionaryCorpus
 from config import config
 
-'''
-########################################################################################################################
+processor_corpuses_and_classes = [(LemmaWordformProcessorTree,'SynTagRus', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorSES,'SynTagRus', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithoutCopy,'SynTagRus', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithCopy,'SynTagRus', UniversalDependenciesCorpus),
 
-# Спарсим пары лемма-словоформа из корпуса SynTagRus из Universal Dependencies и построим деревья для них
-syntagrus = SynTagRusCorpus(config['SynTagRus']['corpus'], config['SynTagRus']['pairs'], config['SynTagRus']['trees'])
-syntagrus.extract_lemma_wordform_pairs_not_unique()
-syntagrus.build_trees()
-syntagrus.save_tree_set()
+                        (LemmaWordformProcessorTree,'poetry', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorSES,'poetry', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithoutCopy,'poetry', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithCopy,'poetry', UniversalDependenciesCorpus),
 
-# Построим словарь частотности с примерами деревьев и пар
-processor_syntagrus = LemmaWordformProcessor()
-visualization_processor = VisualizationProcessor(processor_syntagrus, config['SynTagRus']['trees'],
-                                                  config['SynTagRus']['pairs'], config['SynTagRus']['dict'])
-visualization_processor.build_dictionary()
+                        (LemmaWordformProcessorTree, 'taiga', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorSES, 'taiga', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithoutCopy, 'taiga', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithCopy, 'taiga', UniversalDependenciesCorpus),
 
-########################################################################################################################
+                        (LemmaWordformProcessorTree, 'gsd', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorSES, 'gsd', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithoutCopy, 'gsd', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithCopy, 'gsd', UniversalDependenciesCorpus),
 
-# Спарсим пары лемма-словоформа из корпуса taiga из Universal Dependencies и построим деревья для них
-taiga = SynTagRusCorpus(config['taiga']['corpus'], config['taiga']['pairs'], config['taiga']['trees'])
-taiga.extract_lemma_wordform_pairs_not_unique()
-taiga.build_trees()
-taiga.save_tree_set()
+                        (LemmaWordformProcessorTree, 'pud', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorSES, 'pud', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithoutCopy, 'pud', UniversalDependenciesCorpus),
+                        (LemmaWordformProcessorUDWithCopy, 'pud', UniversalDependenciesCorpus),
 
-# Построим словарь частотности с примерами деревьев и пар
-processor_taiga = LemmaWordformProcessor()
-visualization_processor = VisualizationProcessor(processor_taiga, config['taiga']['trees'],
-                                                  config['taiga']['pairs'], config['taiga']['dict'])
-visualization_processor.build_dictionary()
+                        (LemmaWordformProcessorTree, 'OpenCorpora', OpenCorporaCorpus),
+                        (LemmaWordformProcessorSES, 'OpenCorpora', OpenCorporaCorpus),
+                        (LemmaWordformProcessorUDWithoutCopy, 'OpenCorpora', OpenCorporaCorpus),
+                        (LemmaWordformProcessorUDWithCopy, 'OpenCorpora', OpenCorporaCorpus),
 
-########################################################################################################################
+                        (LemmaWordformProcessorTree, 'SynTagRus_original', BaseDictionaryCorpus),
+                        (LemmaWordformProcessorSES, 'SynTagRus_original', BaseDictionaryCorpus),
+                        (LemmaWordformProcessorUDWithoutCopy, 'SynTagRus_original', BaseDictionaryCorpus),
+                        (LemmaWordformProcessorUDWithCopy, 'SynTagRus_original', BaseDictionaryCorpus),
 
-# Спарсим пары лемма-словоформа из корпуса poetry из Universal Dependencies и построим деревья для них
-poetry = SynTagRusCorpus(config['poetry']['corpus'], config['poetry']['pairs'], config['poetry']['trees'])
-poetry.extract_lemma_wordform_pairs_not_unique()
-poetry.build_trees()
-poetry.save_tree_set()
-
-# Построим словарь частотности с примерами деревьев и пар
-processor_poetry = LemmaWordformProcessor()
-visualization_processor = VisualizationProcessor(processor_poetry, config['poetry']['trees'],
-                                                  config['poetry']['pairs'], config['poetry']['dict'])
-visualization_processor.build_dictionary()
-
-########################################################################################################################
-
-# Спарсим пары лемма-словоформа из корпуса gsd из Universal Dependencies и построим деревья для них
-gsd = SynTagRusCorpus(config['gsd']['corpus'], config['gsd']['pairs'], config['gsd']['trees'])
-gsd.extract_lemma_wordform_pairs_not_unique()
-gsd.build_trees()
-gsd.save_tree_set()
-
-# Построим словарь частотности с примерами деревьев и пар
-processor_gsd = LemmaWordformProcessor()
-visualization_processor = VisualizationProcessor(processor_gsd, config['gsd']['trees'],
-                                                  config['gsd']['pairs'], config['gsd']['dict'])
-visualization_processor.build_dictionary()
-
-########################################################################################################################
-
-# Спарсим пары лемма-словоформа из корпуса pud из Universal Dependencies и построим деревья для них
-pud = SynTagRusCorpus(config['pud']['corpus'], config['pud']['pairs'], config['pud']['trees'])
-pud.extract_lemma_wordform_pairs_not_unique()
-pud.build_trees()
-pud.save_tree_set()
-
-# Построим словарь частотности с примерами деревьев и пар
-processor_pud = LemmaWordformProcessor()
-visualization_processor = VisualizationProcessor(processor_pud, config['pud']['trees'],
-                                                  config['pud']['pairs'], config['pud']['dict'])
-visualization_processor.build_dictionary()
-
-########################################################################################################################
-########################################################################################################################
-
-# Спарсим пары лемма-словоформа из корпуса OpenCorpora и построим деревья для них
-opencorporacorpus = OpenCorporaCorpus(config['OpenCorpora']['corpus'], config['OpenCorpora']['pairs'], config['OpenCorpora']['trees'])
-opencorporacorpus.extract_lemma_wordform_pairs_not_unique()
-opencorporacorpus.build_trees()
-opencorporacorpus.save_tree_set()
-
-# Построим словарь частотности с примерами деревьев и пар
-processor_OpenCorpora = LemmaWordformProcessor()
-visualization_processor = VisualizationProcessor(processor_OpenCorpora, config['OpenCorpora']['tree'],
-                                                  config['OpenCorpora']['pairs'], config['OpenCorpora']['dict'])
-
-visualization_processor.build_dictionary()
-'''
-########################################################################################################################
-########################################################################################################################
-'''
-# Построим деревья для пар из для последней версии оригинала СинТагРуса ~ 1.5 млн словоформ
-syntagrus_original = BaseDictionaryCorpus(config['SynTagRus_original]['pairs'], config['SynTagRus_original]['trees'], config['SynTagRus_original]['corpus'])
-# syntagrus_original.extract_lemma_wordform_pairs_not_unique()
-syntagrus_original.build_trees()
-syntagrus_original.save_tree_set()
-
-# Построим словарь частотности с примерами деревьев и пар
-processor_syntagrus_original = LemmaWordformProcessor()
-visualization_processor = VisualizationProcessor(processor_syntagrus_original, config['SynTagRus_original]['trees'],
-                                                  config['SynTagRus_original]['pairs'], config['SynTagRus_original]['dict'])
-visualization_processor.build_dictionary()
-'''
-
-########################################################################################################################
-########################################################################################################################
-
-
-# Построим деревья для пар из для последней версии оригинала СинТагРуса ~ 1.5 млн словоформ
-RNC_main_corpus = BaseDictionaryCorpus(config['RNC']['pairs'], config['RNC']['trees'], config['RNC']['corpus'])
-# syntagrus_original.extract_lemma_wordform_pairs_not_unique()
-RNC_main_corpus.build_trees()
-RNC_main_corpus.save_tree_set()
-
-# Построим словарь частотности с примерами деревьев и пар
-processor_RNC_main_corpus = LemmaWordformProcessor()
-
-visualization_processor = VisualizationProcessor(processor_RNC_main_corpus, config['RNC']['trees'],
-                                                  config['RNC']['pairs'], config['RNC']['dict'])
-visualization_processor.build_dictionary()
+                        (LemmaWordformProcessorTree, 'RNC', BaseDictionaryCorpus),
+                        (LemmaWordformProcessorSES, 'RNC', BaseDictionaryCorpus),
+                        (LemmaWordformProcessorUDWithoutCopy, 'RNC', BaseDictionaryCorpus),
+                        (LemmaWordformProcessorUDWithCopy, 'RNC', BaseDictionaryCorpus)
+                        ]
 
 
 def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, corpus_class_name):
@@ -131,20 +55,72 @@ def build_dict_with_processor(lemma_wordform_processor_class_name, corpus_name, 
     Функция создает частотный словарь для разных словарей и корпусов
     :param lemma_wordform_processor_class_name: Имя процессора построения леммы в зависимости от типа правил
     :param corpus_name: имя корпуса который используется для построения словаря
+    :param corpus_class_name: имя класса корпуса который используется для извлечения пар, в случае, если их нет
     :return: -
     '''
 
-    processor = lemma_wordform_processor_class_name()
+    processor = lemma_wordform_processor_class_name
 
+    '''
     if not config[corpus_name]['pairs'].exists():
-        corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['trees'], processor, config[corpus_name]['corpus'])
+        corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['trees'], processor,
+                                   config[corpus_name]['corpus'])
         corpus.extract_lemma_wordform_pairs_not_unique()
+    '''
 
-    if not config[corpus_name]['trees'].exists():
-        corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['trees'], processor, config[corpus_name]['corpus'])
-        corpus.build_rules()
-        corpus.save_rules_set()
+    if lemma_wordform_processor_class_name == LemmaWordformProcessorTree:
+        if not config[corpus_name]['trees'].exists():
+            corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['trees'], processor,
+                                       config[corpus_name]['corpus'])
+            corpus.build_rules()
+            corpus.save_rules_set()
+        '''
+        if not config[corpus_name]['dict_tree'].exists():
+            visualization_processor = VisualizationProcessor(processor, config[corpus_name]['trees'],
+                                                             config[corpus_name]['pairs'], config[corpus_name]['dict_tree'])
+            visualization_processor.build_dictionary()
+        '''
 
-    if not config[corpus_name]['dict'].exists():
-        visualization_processor = VisualizationProcessor(processor, config[corpus_name]['trees'], config[corpus_name]['pairs'], config[corpus_name]['dict'])
-        visualization_processor.build_dictionary()
+    if lemma_wordform_processor_class_name == LemmaWordformProcessorSES:
+        if not config[corpus_name]['ses'].exists():
+            corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['ses'], processor,
+                                       config[corpus_name]['corpus'])
+            corpus.build_rules()
+            corpus.save_rules_set()
+        '''
+        if not config[corpus_name]['dict_ses'].exists():
+            visualization_processor = VisualizationProcessor(processor, config[corpus_name]['ses'],
+                                                             config[corpus_name]['pairs'], config[corpus_name]['dict_ses'])
+            visualization_processor.build_dictionary()
+        '''
+
+    if lemma_wordform_processor_class_name == LemmaWordformProcessorUDWithCopy:
+        if not config[corpus_name]['ud_with_copy'].exists():
+            corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['ud_with_copy'], processor,
+                                       config[corpus_name]['corpus'])
+            corpus.build_rules()
+            corpus.save_rules_set()
+
+        '''
+        if not config[corpus_name]['dict_ud_with_copy'].exists():
+            visualization_processor = VisualizationProcessor(processor, config[corpus_name]['ud_with_copy'],
+                                                             config[corpus_name]['pairs'], config[corpus_name]['dict_ud_with_copy'])
+            visualization_processor.build_dictionary()
+        '''
+
+    if lemma_wordform_processor_class_name == LemmaWordformProcessorUDWithoutCopy:
+        if not config[corpus_name]['ud_without_copy'].exists():
+            corpus = corpus_class_name(config[corpus_name]['pairs'], config[corpus_name]['ud_without_copy'], processor,
+                                       config[corpus_name]['corpus'])
+            corpus.build_rules()
+            corpus.save_rules_set()
+        '''
+        if not config[corpus_name]['dict_ud_without_copy'].exists():
+            visualization_processor = VisualizationProcessor(processor, config[corpus_name]['ud_without_copy'],
+                                                             config[corpus_name]['pairs'], config[corpus_name]['dict_ud_without_copy'])
+            visualization_processor.build_dictionary()
+        '''
+
+
+for item in processor_corpuses_and_classes:
+    build_dict_with_processor(item[0], item[1], item[2])

@@ -1,9 +1,9 @@
 import plotly.express as px
 import random
 import pickle
-from lemma_wordform_processor import LemmaWordformProcessor
+from lemma_wordform_processor import LemmaWordformProcessorSES
 from collections import defaultdict
-
+from config import config
 class VisualizationProcessor:
     def __init__(self, lemma_wordform_processor, tree_file_path, pairs_file_path, output_file_path):
         """
@@ -14,7 +14,7 @@ class VisualizationProcessor:
         :param pairs_file_path: Путь к файлу с парами.
         :param output_file_path: Путь к файлу для сохранения результирующего словаря.
         """
-        self.processor = lemma_wordform_processor
+        self.processor = lemma_wordform_processor()
         self.tree_file_path = tree_file_path
         self.pairs_file_path = pairs_file_path
         self.output_file_path = output_file_path
@@ -45,12 +45,14 @@ class VisualizationProcessor:
 
         result_dict = defaultdict(lambda: {'f_x': 0, 'trees': [], 'pairs': []})
 
+
         for tree in tree_set:
             x_counter = 0
             pairs_list = []
 
             for pair in pairs:
-                lemma = self.processor.apply(tree, pair[1])
+                print(pair)
+                lemma = self.processor.apply_rule(tree, pair[1])
 
                 if lemma == pair[0]:
                     x_counter += 1
