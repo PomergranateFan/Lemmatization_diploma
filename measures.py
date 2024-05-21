@@ -144,7 +144,7 @@ def make_dict_of_measures_for_corpus(lemma_wordform_processor_class_name, corpus
 
 
 # print(make_dict_of_measures_for_corpus(LemmaWordformProcessorTree, 'RNC', BaseDictionaryCorpus))
-
+'''
 def calculate_measures_for_all_corpuses(list_of_tuples_name_of_corpus_and_class, lemma_wordform_processor_class_name):
     for items in list_of_tuples_name_of_corpus_and_class:
         print(make_dict_of_measures_for_corpus(lemma_wordform_processor_class_name, items[0], items[1]))
@@ -157,7 +157,9 @@ calculate_measures_for_all_corpuses(corpuses_and_classes, LemmaWordformProcessor
 
 
 
-'''
+
+
+
 # Создание словаря с результатами
 corpora_dict = {}
 
@@ -184,3 +186,16 @@ df = pd.DataFrame(corpora_dict).transpose()
 
 print(df)
 '''
+
+measures_dict = {}
+corpus_names = ['SynTagRus', 'taiga']
+rules = ['trees', 'ud_with_copy', 'ud_without_copy']
+
+for corpus_name in corpus_names:
+    for rule in rules:
+        name = 'dict_'+rule
+        k = calculate_K(config[corpus_name][name])
+        print(f"Для корпуса {corpus_name}, и для правила {rule} мера Yule's K равна {round(k,3)}")
+
+
+

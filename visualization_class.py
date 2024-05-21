@@ -51,7 +51,7 @@ class VisualizationProcessor:
             pairs_list = []
 
             for pair in pairs:
-                print(pair)
+
                 lemma = self.processor.apply_rule(tree, pair[1])
 
                 if lemma == pair[0]:
@@ -88,7 +88,7 @@ class VisualizationProcessor:
             random_pairs = random.sample(values['pairs'], min(3, len(values['pairs'])))
             pairs = []
             for lemma, wordform in random_pairs:
-                tree = self.processor.build_tree(lemma, wordform)
+                tree = self.processor.build_rule(lemma, wordform)
                 pairs.append((tree, lemma, wordform))
             random_pairs = pairs
 
@@ -96,8 +96,8 @@ class VisualizationProcessor:
             text_info.append(f"\nPairs:\n{pair_info}")
 
         fig = px.scatter(x=x_values, y=y_values, hover_data={'text': text_info},
-                         labels={'x': 'x_counter', 'y': 'f_x'},
-                         title='Частотный график')
+                         labels={'x': 'x', 'y': 'f_x'},
+                         title='Частотный график построения леммы по словоформе')
 
         fig.update_xaxes(type='log')
         fig.update_yaxes(type='log')

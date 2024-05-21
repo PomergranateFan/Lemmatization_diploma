@@ -24,7 +24,7 @@ def extract_tokens(sentence):
 
 
 # Загрузка словаря деревьев из файла
-def load_trees(file_path):
+def load_file(file_path):
     with open(file_path, 'rb') as f:
         return pickle.load(f)
 
@@ -32,24 +32,24 @@ def load_trees(file_path):
 
 
 # Функция для получения метки класса по словоформе и лемме
-def get_label(processor_name, wordform, lemma, trees_tuple):
+def get_label(processor_name, wordform, lemma, labels_trees, base_rule):
     processor = processor_name()
     rule = processor.build_rule(wordform, lemma)
-
-    if rule in trees_tuple:
-        index = trees_tuple.index(rule)
-        return index+1 # возвращаем индекс+1 как метку, чтобы 0 был для дополнения.
-
+    if rule in labels_trees:
+        index = labels_trees[rule]
+    else:
+        index = labels_trees[base_rule]# Так мы убираем ошибки из датасетов, связанные с пунктуацией
+    return index
 
 # Функция для обработки файла и записи результата в новый файл
-def process_file(processor_name, input_file, output_file, trees_tuple):
+def process_file(processor_name, input_file, output_file, labels_trees, base_rule):
     with open(input_file, 'r', encoding='utf-8') as f_in, open(output_file, 'w', encoding='utf-8') as f_out:
         data = f_in.read()
         sentences = parse(data)
         for sentence in sentences:
             tokens = extract_tokens(sentence)
             for wordform, lemma in tokens:
-                class_label = get_label(processor_name, wordform, lemma, trees_tuple)
+                class_label = get_label(processor_name, wordform, lemma, labels_trees, base_rule)
                 f_out.write(f"{wordform}\t{class_label}\n")
             f_out.write('\n')
 '''
@@ -67,13 +67,15 @@ process_file(corpus_file, 'dataset_poetry_test.txt', trees_tuple)
 process_file(corpus_file_1, 'dataset_poetry_dev.txt', trees_tuple)
 '''
 
-corpus_names = ['gsd', 'poetry', 'taiga', 'SynTagRus']
+corpus_names = ['SynTagRus', 'taiga']
 rules = ['trees', 'ses', 'ud_with_copy', 'ud_without_copy']
 
 for corpus_name in corpus_names:
     for rule in rules:
         corpus_file = config[corpus_name]['corpus']
-        rules_tuple = set_to_tuple(load_trees(config[corpus_name][rule]))
+        name_labels = "labels_" + rule
+        rules_dict = load_file(config[corpus_name][name_labels])
+
         for file_path in corpus_file.iterdir():
             print(file_path)
             if file_path.suffix == '.conllu':
@@ -82,58 +84,69 @@ for corpus_name in corpus_names:
                     if rule == 'trees':
                         if not config[corpus_name]['dataset_tree_test'].exists():
                             processor_name = LemmaWordformProcessorTree
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_tree_test'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_tree_test'], rules_dict, base_rule)
                     elif rule == 'ses':
                         if not config[corpus_name]['dataset_ses_test'].exists():
                             processor_name = LemmaWordformProcessorSES
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_ses_test'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_ses_test'], rules_dict, base_rule)
                     elif rule == 'ud_with_copy':
                         if not config[corpus_name]['dataset_ud_with_copy_test'].exists():
                             processor_name = LemmaWordformProcessorUDWithCopy
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_with_copy_test'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_with_copy_test'], rules_dict, base_rule)
                     elif rule == 'ud_without_copy':
                         if not config[corpus_name]['dataset_ud_without_copy_test'].exists():
                             processor_name = LemmaWordformProcessorUDWithoutCopy
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_without_copy_test'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_without_copy_test'], rules_dict, base_rule)
 
                 elif file_path.stem.endswith('train'):
 
                     if rule == 'trees':
                         if not config[corpus_name]['dataset_tree_train'].exists():
                             processor_name = LemmaWordformProcessorTree
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_tree_train'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_tree_train'], rules_dict, base_rule)
                     elif rule == 'ses':
                         if not config[corpus_name]['dataset_ses_train'].exists():
                             processor_name = LemmaWordformProcessorSES
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_ses_train'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_ses_train'], rules_dict, base_rule)
                     elif rule == 'ud_with_copy':
                         if not config[corpus_name]['dataset_ud_with_copy_train'].exists():
                             processor_name = LemmaWordformProcessorUDWithCopy
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_with_copy_train'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_with_copy_train'], rules_dict, base_rule)
                     elif rule == 'ud_without_copy':
                         if not config[corpus_name]['dataset_ud_without_copy_train'].exists():
                             processor_name = LemmaWordformProcessorUDWithoutCopy
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_without_copy_train'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_without_copy_train'], rules_dict, base_rule)
 
                 elif file_path.stem.endswith('dev'):
 
                     if rule == 'trees':
                         if not config[corpus_name]['dataset_tree_dev'].exists():
                             processor_name = LemmaWordformProcessorTree
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_tree_dev'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_tree_dev'], rules_dict, base_rule)
                     elif rule == 'ses':
                         if not config[corpus_name]['dataset_ses_dev'].exists():
                             processor_name = LemmaWordformProcessorSES
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_ses_dev'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_ses_dev'], rules_dict, base_rule)
                     elif rule == 'ud_with_copy':
                         if not config[corpus_name]['dataset_ud_with_copy_dev'].exists():
                             processor_name = LemmaWordformProcessorUDWithCopy
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_with_copy_dev'], rules_tuple)
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_with_copy_dev'], rules_dict, base_rule)
                     elif rule == 'ud_without_copy':
                         if not config[corpus_name]['dataset_ud_without_copy_dev'].exists():
                             processor_name = LemmaWordformProcessorUDWithoutCopy
-                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_without_copy_dev'], rules_tuple)
-
+                            base_rule = processor_name().build_rule(".", ".")
+                            process_file(processor_name, file_path, config[corpus_name]['dataset_ud_without_copy_dev'], rules_dict, base_rule)
 
 
 
@@ -201,3 +214,4 @@ class MakingDatasetUD(BaseMakingDataset):
             tokens.append((wordform.lower(), lemma.lower()))
         return tokens
 '''
+
